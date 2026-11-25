@@ -19,7 +19,7 @@ jobs:
       - run: app/tools/release.sh
         env: { VERSION: "${{ github.ref_type == 'tag' && github.ref_name || '0.0.0-ci' }}" }
       - uses: actions/upload-artifact@v4
-        with: { name: Plume-dmg, path: dist/Plume.dmg }
+        with: { name: MyLatex-dmg, path: dist/MyLatex.dmg }
       - if: github.ref_type == 'tag'
-        run: gh release create "$GITHUB_REF_NAME" dist/Plume.dmg --generate-notes --title "Plume $GITHUB_REF_NAME"
+        run: gh release create "$GITHUB_REF_NAME" dist/MyLatex.dmg --generate-notes --title "MyLatex $GITHUB_REF_NAME"
         env: { GH_TOKEN: "${{ github.token }}" }

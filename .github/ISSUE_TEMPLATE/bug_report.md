@@ -9,4 +9,4 @@ labels: bug
 
 **Expected behavior**
 
-**Environment**: macOS version, Plume version (Plume → About), Apple Silicon / Intel
+**Environment**: macOS version, MyLatex version (MyLatex → About), Apple Silicon / Intel

@@ -1,6 +1,6 @@
 # Third-party software
 
-Plume bundles or builds on the following open-source projects.
+MyLatex bundles or builds on the following open-source projects.
 
 | Project | Use | License |
 |---|---|---|
@@ -15,4 +15,4 @@ Plume bundles or builds on the following open-source projects.
 | [an-array-of-french-words](https://github.com/words/an-array-of-french-words) | French dictionary source | MIT |
 
 The TeX files in the bundled cache come from the TeX Live distribution through Tectonic's bundle; each package keeps its own license (LPPL, etc.).
-Plume is not affiliated with JetBrains, Overleaf, ICML, NeurIPS or IEEE. The ICML/NeurIPS/IEEE templates are look-alikes, not the official style files.
+MyLatex is not affiliated with JetBrains, Overleaf, ICML, NeurIPS or IEEE. The ICML/NeurIPS/IEEE templates are look-alikes, not the official style files.

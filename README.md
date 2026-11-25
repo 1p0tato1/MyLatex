@@ -1,5 +1,5 @@
-<p align="center"><img src="docs/img/icon.png" width="110" alt="Plume"></p>
-<h1 align="center">Plume</h1>
+<p align="center"><img src="docs/img/icon.png" width="110" alt="MyLatex"></p>
+<h1 align="center">MyLatex</h1>
 <p align="center"><b>A fast, light, native LaTeX editor for macOS.</b><br>
 Live PDF preview · Visual mode · SyncTeX · offline compiling · spell check · English / Français / Español / Deutsch</p>
 <p align="center">
@@ -8,14 +8,14 @@ Live PDF preview · Visual mode · SyncTeX · offline compiling · spell check �
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-![Plume — code and live PDF](docs/img/main-dark.png)
+![MyLatex — code and live PDF](docs/img/main-dark.png)
 
-Plume is a small desktop app (Tauri + Rust, ~55 MB, ~150–300 MB RAM) that compiles LaTeX with the embedded [Tectonic](https://tectonic-typesetting.github.io) engine. **No TeX Live install (4 GB+) and no account needed** — it works offline, and the first compile is fast because the common packages are already inside the app.
+MyLatex is a small desktop app (Tauri + Rust, ~55 MB, ~150–300 MB RAM) that compiles LaTeX with the embedded [Tectonic](https://tectonic-typesetting.github.io) engine. **No TeX Live install (4 GB+) and no account needed** — it works offline, and the first compile is fast because the common packages are already inside the app.
 
 ## Download & install
 
-1. Go to the [**latest release**](../../releases/latest) and download `Plume.dmg` (Apple Silicon Macs).
-2. Open it and drag **Plume** into **Applications**.
+1. Go to the [**latest release**](../../releases/latest) and download `MyLatex.dmg` (Apple Silicon Macs).
+2. Open it and drag **MyLatex** into **Applications**.
 3. The app is not yet notarized by Apple, so the **first time** use **right-click → Open** (or *System Settings → Privacy & Security → Open Anyway*). After that it opens normally.
 
 ## Features
@@ -44,12 +44,12 @@ Plume is a small desktop app (Tauri + Rust, ~55 MB, ~150–300 MB RAM) that comp
 Requirements: macOS, [Rust](https://rustup.rs), Node 20+, Xcode command-line tools.
 
 ```bash
-git clone <this-repo> plume && cd plume/app
+git clone https://github.com/1p0tato1/MyLatex.git mylatex && cd mylatex/app
 npm ci && npm run build        # bundle the editor
 tools/fetch-tectonic.sh        # Tectonic binary → ../bin
 tools/make-seed.sh             # offline TeX cache → ../bin/seed-cache (~3 min, once)
 cd src-tauri && cargo run      # run in dev mode
-cd .. && tools/release.sh      # → ../dist/Plume.app and ../dist/Plume.dmg
+cd .. && tools/release.sh      # → ../dist/MyLatex.app and ../dist/MyLatex.dmg
 ```
 
 Developer-ID signing and Apple notarization are supported by `release.sh` through the `DEVELOPER_ID` and `NOTARY_PROFILE` environment variables (see the script header).

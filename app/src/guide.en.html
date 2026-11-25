@@ -1,4 +1,4 @@
-<h1>Plume — User Guide</h1>
+<h1>MyLatex — User Guide</h1>
 <p class="lead">A fast, private LaTeX editor for Mac. Write on the left, see your PDF on the right. Everything runs on your computer: no account, no TeX installation, no upload.</p>
 <div class="toc">
   <a href="#g-start">Quick start</a><a href="#g-install">Installing</a><a href="#g-window">The window</a><a href="#g-files">Files &amp; projects</a><a href="#g-compile">Compiling</a><a href="#g-errors">Errors &amp; warnings</a>
@@ -6,7 +6,7 @@
 </div>
 
 <h2 id="g-install">Installing &amp; first launch</h2>
-<p>Open the <b>Plume.dmg</b> disk image and drag <b>Plume</b> onto <b>Applications</b>. If macOS says the app “can’t be opened because the developer cannot be verified” (this happens with builds that are not notarized by Apple), <b>right-click Plume → Open → Open</b> once; or go to <b>System Settings → Privacy &amp; Security</b> and click <b>Open Anyway</b>. You only need to do this the first time.</p>
+<p>Open the <b>MyLatex.dmg</b> disk image and drag <b>MyLatex</b> onto <b>Applications</b>. If macOS says the app “can’t be opened because the developer cannot be verified” (this happens with builds that are not notarized by Apple), <b>right-click MyLatex → Open → Open</b> once; or go to <b>System Settings → Privacy &amp; Security</b> and click <b>Open Anyway</b>. You only need to do this the first time.</p>
 
 <h2 id="g-start">Quick start</h2>
 <ol>
@@ -14,7 +14,7 @@
   <li>Type. With <b>Autocompile</b> on (default) the PDF refreshes shortly after you stop typing. Otherwise press <kbd>⌘↵</kbd> or the <b>Compile</b> button.</li>
   <li>Save with <kbd>⌘S</kbd>. Get the PDF with the <b>PDF</b> button above the preview (or <kbd>⇧⌘E</kbd>).</li>
 </ol>
-<div class="tip"><b>First compile ever?</b> Plume ships with the LaTeX format and the most common packages, so it works offline right away. Rarely used packages are downloaded once, on request, and then kept.</div>
+<div class="tip"><b>First compile ever?</b> MyLatex ships with the LaTeX format and the most common packages, so it works offline right away. Rarely used packages are downloaded once, on request, and then kept.</div>
 
 <h2 id="g-window">The window</h2>
 <table>
@@ -36,11 +36,11 @@
 
 <h2 id="g-files">Files &amp; projects</h2>
 <ul>
-  <li><b>Plume never writes to your files behind your back — unless you turn on Auto-save.</b> Compiling uses the text in the editor; the file on disk only changes when you save (<kbd>⌘S</kbd>) or when Auto-save is on. The one exception: when you edit a file that belongs to a project (see below), it is saved before compiling so that <code>\input</code> sees your change.</li>
+  <li><b>MyLatex never writes to your files behind your back — unless you turn on Auto-save.</b> Compiling uses the text in the editor; the file on disk only changes when you save (<kbd>⌘S</kbd>) or when Auto-save is on. The one exception: when you edit a file that belongs to a project (see below), it is saved before compiling so that <code>\input</code> sees your change.</li>
   <li><kbd>⌘S</kbd> save · <kbd>⇧⌘S</kbd> Save As · <kbd>⌥⌘S</kbd> Save All · <kbd>⌘W</kbd> close tab. Closing or quitting with unsaved changes asks what to do.</li>
   <li><b>Auto-save</b> (off by default): flip the <b>Auto-save</b> switch in the top bar, or use <b>File → Auto-Save</b>. When it is on, every file that already has a name is saved about a second after you stop typing, when you switch tabs or leave the window, and when you quit. Untitled documents are never auto-saved — save them once with <kbd>⌘S</kbd> to give them a name.</li>
-  <li><b>Crash-proof:</b> open tabs and unsaved text are restored the next time you launch Plume.</li>
-  <li>In Finder, use <b>Open With → Plume</b> on a <code>.tex</code> file, or drag it onto the Plume icon.</li>
+  <li><b>Crash-proof:</b> open tabs and unsaved text are restored the next time you launch MyLatex.</li>
+  <li>In Finder, use <b>Open With → MyLatex</b> on a <code>.tex</code> file, or drag it onto the MyLatex icon.</li>
 </ul>
 <h3>Projects with several files</h3>
 <p>Open the main file (the one with <code>\documentclass</code>). Everything in the same folder — <code>.sty</code>, <code>.cls</code>, <code>.bst</code>, <code>.bib</code>, images, <code>\input</code>-ed sections — is found automatically, and BibTeX runs by itself.</p>
@@ -52,7 +52,7 @@
 <h3>Templates</h3>
 <p><b>File → New from Template</b> opens a ready-to-compile document in a new tab: <i>Article</i>, <i>ICML-style paper</i>, <i>NeurIPS-style paper</i>, <i>IEEE conference paper</i> (uses the real <code>IEEEtran</code> class), <i>Beamer presentation</i>, <i>CV / Résumé</i> (uses <code>moderncv</code>) and <i>Letter</i>. The ICML and NeurIPS templates are look-alikes built on standard packages (two columns / single column, Times, the usual section layout): the official <code>.sty</code> files are not bundled because they are issued per conference year. To submit, put the official <code>.sty</code> next to your file and uncomment the <code>\usepackage</code> line shown at the top of the template.</p>
 <h3>Images</h3>
-<p>Drop a PNG, JPG or PDF onto the window (or use <b>Image</b> in the toolbar). Plume copies it into a <code>figures/</code> folder next to your document if it lives elsewhere, adds <code>\usepackage{graphicx}</code> if needed, and inserts a <code>figure</code> with <code>\includegraphics</code>, <code>\caption{}</code> and <code>\label{}</code>. Save an untitled document first so the path can be relative.</p>
+<p>Drop a PNG, JPG or PDF onto the window (or use <b>Image</b> in the toolbar). MyLatex copies it into a <code>figures/</code> folder next to your document if it lives elsewhere, adds <code>\usepackage{graphicx}</code> if needed, and inserts a <code>figure</code> with <code>\includegraphics</code>, <code>\caption{}</code> and <code>\label{}</code>. Save an untitled document first so the path can be relative.</p>
 <h3>Bibliography</h3>
 <p>Add <code>\bibliography{refs}</code> (BibTeX) or <code>\addbibresource{refs.bib}</code> (biblatex) and keep the <code>.bib</code> next to your <code>.tex</code>. Type <code>\cite{</code> to pick keys from it.</p>
 
@@ -60,7 +60,7 @@
 <ul>
   <li><b>Autocompile</b> — flip the <b>Autocompile</b> switch in the top bar (or <b>Build → Auto-Compile While Typing</b>). When on, the PDF refreshes shortly after you stop typing; turning it on compiles immediately. <kbd>⌘↵</kbd> or the <b>Compile</b> button compiles at any time.</li>
   <li>While packages are being downloaded, a thin bar under the tabs and an overlay at the bottom of the preview show real progress: percentage, files, megabytes. Normal compiles show no animation at all — just the status text.</li>
-  <li><b>Offline first.</b> Compiling uses only what is already on your Mac. If something is missing, Plume shows a <b>“Download needed”</b> card instead of silently going online. Click <b>Download and compile</b> to fetch it (internet required); it is then kept.</li>
+  <li><b>Offline first.</b> Compiling uses only what is already on your Mac. If something is missing, MyLatex shows a <b>“Download needed”</b> card instead of silently going online. Click <b>Download and compile</b> to fetch it (internet required); it is then kept.</li>
   <li><b>Keep Downloaded Packages After Quit</b> (Build menu): when off, downloaded packages are cleaned when you quit, and the built-in starter set is restored on the next launch.</li>
 </ul>
 
@@ -77,7 +77,7 @@
   <li><b>Zoom:</b> the <b>−</b> / <b>+</b> buttons, <kbd>⌘</kbd> + scroll, or pinch on the trackpad. It follows your cursor and sharpens a moment after you stop. Click the percentage to reset to 100 %.</li>
   <li><b>Pages:</b> the bar shows the current page and total; use ‹ › to move.</li>
   <li><b>PDF button:</b> saves the compiled PDF where you choose (also <kbd>⇧⌘E</kbd>). <b>File → Save .tex and PDF Together</b> writes both next to each other.</li>
-  <li><b>Editor → PDF (find a word in the PDF):</b> put the cursor on a word (or select a phrase) and click <b>Show in PDF</b> above the preview, press <kbd>⌘J</kbd>, or <kbd>⌘</kbd>-click the word in the editor. The PDF scrolls there and flashes a yellow highlight. If the same word appears several times in the paragraph, Plume picks the one that matches your position; if it can’t be located from the source line, it searches the whole PDF (press again for the next match).</li>
+  <li><b>Editor → PDF (find a word in the PDF):</b> put the cursor on a word (or select a phrase) and click <b>Show in PDF</b> above the preview, press <kbd>⌘J</kbd>, or <kbd>⌘</kbd>-click the word in the editor. The PDF scrolls there and flashes a yellow highlight. If the same word appears several times in the paragraph, MyLatex picks the one that matches your position; if it can’t be located from the source line, it searches the whole PDF (press again for the next match).</li>
   <li><b>PDF → source:</b> <b>double-click</b> (or <kbd>⌘</kbd>-click) a word in the PDF to jump to its line in the editor and select the word.</li>
 </ul>
 
@@ -120,9 +120,9 @@
 </ul>
 
 <h2 id="g-spell">Spell check (English &amp; French)</h2>
-<p>Misspelled words are underlined with a <b>red wavy line</b> as you type. Plume has two built-in dictionaries: <b>English</b> (about 115,000 words — American and British spellings plus common scientific and computing vocabulary) and <b>French</b> (about 330,000 forms, accents and elisions such as <i>l’homme</i>, <i>qu’il</i> included). Nothing is sent anywhere. Only the text on screen is checked and a dictionary is loaded only when it is needed, so memory use stays tiny.</p>
+<p>Misspelled words are underlined with a <b>red wavy line</b> as you type. MyLatex has two built-in dictionaries: <b>English</b> (about 115,000 words — American and British spellings plus common scientific and computing vocabulary) and <b>French</b> (about 330,000 forms, accents and elisions such as <i>l’homme</i>, <i>qu’il</i> included). Nothing is sent anywhere. Only the text on screen is checked and a dictionary is loaded only when it is needed, so memory use stays tiny.</p>
 <ul>
-  <li><b>Language: automatic or manual.</b> The selector next to the Spelling switch (toolbar) is on <b>Auto</b> by default: Plume looks at <code>\usepackage[french]{babel}</code> (or <code>polyglossia</code>, <code>\selectlanguage</code>…) and, when there is none, at the most common words of your text. The detected language is shown at the right of the bottom bar. Pick <b>English</b> or <b>Français</b> in the selector (or in <b>Edit → Spelling Language</b>, or Preferences) to force one.</li>
+  <li><b>Language: automatic or manual.</b> The selector next to the Spelling switch (toolbar) is on <b>Auto</b> by default: MyLatex looks at <code>\usepackage[french]{babel}</code> (or <code>polyglossia</code>, <code>\selectlanguage</code>…) and, when there is none, at the most common words of your text. The detected language is shown at the right of the bottom bar. Pick <b>English</b> or <b>Français</b> in the selector (or in <b>Edit → Spelling Language</b>, or Preferences) to force one.</li>
   <li><b>Switch it on/off</b> with the <b>Spelling</b> switch or <b>Edit → Check Spelling While Typing</b>.</li>
   <li><b>Right-click</b> an underlined word for suggestions: click one to replace the word, or choose <b>Add to dictionary</b> (remembered forever; manage the list in Preferences) or <b>Ignore for this session</b>. <b>Edit → Add Word at Cursor to Dictionary</b> does the same from the keyboard.</li>
   <li><b>Not checked</b> (so you won’t see false alarms): LaTeX commands and their arguments, math, comments, URLs and e-mail addresses, the preamble, words with digits, ACRONYMS, <code>CamelCase</code> names, and capitalized words in the middle of a sentence (assumed to be names). In English, contractions and accented words are skipped too.</li>
@@ -130,23 +130,23 @@
 </ul>
 
 <h2 id="g-prefs">Preferences &amp; language</h2>
-<p><b>Plume → Preferences…</b> (<kbd>⌘,</kbd>) gathers every setting in one window: interface language, theme, font size, tab width, line wrapping, font ligatures, auto-close of brackets, compile/save switches, spell-check language, your personal dictionary, and a reset button.</p>
-<p><b>Changing the language of the interface</b> (menus, buttons, messages and this guide) takes one click: <b>View → Language</b> or the <i>Language</i> row of Preferences. Plume ships in <b>English, Français, Español and Deutsch</b> and starts in your Mac’s language. (The guide is available in English and French; other languages show the English guide.) Adding another language only takes one translation column — see the <code>tools/build-lang.py</code> file in the source.</p>
+<p><b>MyLatex → Preferences…</b> (<kbd>⌘,</kbd>) gathers every setting in one window: interface language, theme, font size, tab width, line wrapping, font ligatures, auto-close of brackets, compile/save switches, spell-check language, your personal dictionary, and a reset button.</p>
+<p><b>Changing the language of the interface</b> (menus, buttons, messages and this guide) takes one click: <b>View → Language</b> or the <i>Language</i> row of Preferences. MyLatex ships in <b>English, Français, Español and Deutsch</b> and starts in your Mac’s language. (The guide is available in English and French; other languages show the English guide.) Adding another language only takes one translation column — see the <code>tools/build-lang.py</code> file in the source.</p>
 
 <h2 id="g-themes">Themes</h2>
 <p><b>View → Theme</b>: <i>Match System</i>, <i>Light</i>, <i>Light with Light Header</i>, <i>IntelliJ Light</i>, <i>Islands Light</i>, <i>Fleet Light</i>, <i>Dark</i>, <i>Darcula</i>, <i>Islands Dark</i>, <i>Fleet Dark</i>, <i>High Contrast</i>. <kbd>⇧⌘D</kbd> flips between light and dark. <kbd>⌘=</kbd> / <kbd>⌘-</kbd> / <kbd>⌘0</kbd> change the editor font size.</p>
 
 <h2 id="g-menus">Menu reference</h2>
-<p>Plume uses the standard Mac menu bar. Everything below is also reachable from the window.</p>
+<p>MyLatex uses the standard Mac menu bar. Everything below is also reachable from the window.</p>
 <table>
   <tr><th>Menu</th><th>Items</th></tr>
-  <tr><td><b>Plume</b></td><td>About · <b>Preferences…</b> <kbd>⌘,</kbd> · Hide, Hide Others · Quit <kbd>⌘Q</kbd></td></tr>
+  <tr><td><b>MyLatex</b></td><td>About · <b>Preferences…</b> <kbd>⌘,</kbd> · Hide, Hide Others · Quit <kbd>⌘Q</kbd></td></tr>
   <tr><td><b>File</b></td><td>New <kbd>⌘N</kbd> · New from Template ▸ · Open… <kbd>⌘O</kbd> · Close Tab <kbd>⌘W</kbd> · Save <kbd>⌘S</kbd> · Save As… <kbd>⇧⌘S</kbd> · Save All <kbd>⌥⌘S</kbd> · <b>Auto-Save</b> (switch) · Export PDF… <kbd>⇧⌘E</kbd> · Save .tex and PDF Together · Show in Finder</td></tr>
   <tr><td><b>Edit</b></td><td>Undo <kbd>⌘Z</kbd> · Redo <kbd>⇧⌘Z</kbd> · Cut / Copy / Paste / Select All · Find and Replace… <kbd>⌘F</kbd> · Find Next <kbd>⌘G</kbd> · Find Previous <kbd>⇧⌘G</kbd> · Go to Line… <kbd>⌘L</kbd> · Toggle Comment <kbd>⌘/</kbd> · Move Line Up/Down <kbd>⌥↑</kbd> <kbd>⌥↓</kbd> · Duplicate Line <kbd>⇧⌥↓</kbd> · <b>Check Spelling While Typing</b> (switch) · Spelling Language ▸ · Add Word at Cursor to Dictionary</td></tr>
   <tr><td><b>Build</b></td><td>Compile <kbd>⌘↵</kbd> · Show Word in PDF <kbd>⌘J</kbd> · Set as Main Document <kbd>⇧⌘M</kbd> · <b>Auto-Compile While Typing</b> (switch) · <b>Keep Downloaded Packages After Quit</b> (switch)</td></tr>
   <tr><td><b>View</b></td><td>Theme ▸ (11 themes) · Toggle Light/Dark <kbd>⇧⌘D</kbd> · Toggle Visual Editor <kbd>⌥⌘V</kbd> · Toggle Outline <kbd>⌥⌘O</kbd> · Toggle PDF Preview <kbd>⌥⌘P</kbd> · <b>Language ▸</b> · Zoom In/Out/Actual Size <kbd>⌘=</kbd> <kbd>⌘-</kbd> <kbd>⌘0</kbd> (editor font) · Show Next/Previous Tab · Enter Full Screen</td></tr>
   <tr><td><b>Window</b></td><td>Minimize, Zoom</td></tr>
-  <tr><td><b>Help</b></td><td>Plume Guide <kbd>⇧⌘/</kbd> · Keyboard Shortcuts</td></tr>
+  <tr><td><b>Help</b></td><td>MyLatex Guide <kbd>⇧⌘/</kbd> · Keyboard Shortcuts</td></tr>
 </table>
 
 <h2 id="keys">Keyboard shortcuts</h2>
@@ -184,7 +184,7 @@
   <tr><td>Editor / PDF split</td><td>Drag the divider</td><td>50 / 50</td></tr>
   <tr><td>Open tabs, unsaved text, main document</td><td>Automatic</td><td>—</td></tr>
 </table>
-<p>To go back to factory settings: <b>Preferences → Reset all settings…</b> (or quit Plume and delete <code>~/Library/WebKit/app.plume.desktop</code>).</p>
+<p>To go back to factory settings: <b>Preferences → Reset all settings…</b> (or quit MyLatex and delete <code>~/Library/WebKit/app.mylatex.desktop</code>).</p>
 
 <h2 id="g-tips">Tips &amp; typical workflows</h2>
 <h3>Writing a paper</h3>
@@ -199,11 +199,11 @@
 <h3>Working offline</h3>
 <p>Everything works without internet except downloading a missing package. Before a trip, compile your document once while online so everything it needs is cached (leave <b>Keep Downloaded Packages</b> on).</p>
 <h3>Several windows of work</h3>
-<p>Plume is a single window with tabs. Open all the files of a project as tabs; the ◆ tab is the one that is built.</p>
+<p>MyLatex is a single window with tabs. Open all the files of a project as tabs; the ◆ tab is the one that is built.</p>
 
 <h2 id="g-templates">Conference templates (ICML, IEEE, NeurIPS, beamer…)</h2>
 <ol>
-  <li>Unzip the template into a folder and open its main <code>.tex</code> file in Plume.</li>
+  <li>Unzip the template into a folder and open its main <code>.tex</code> file in MyLatex.</li>
   <li>Keep the template’s <code>.sty</code>, <code>.cls</code>, <code>.bst</code>, <code>.bib</code> and figures in that folder.</li>
   <li>Compile. BibTeX/biblatex runs automatically. If a template needs a package that is not in the offline cache you will get the <b>Download needed</b> card.</li>
   <li>For a multi-file template, open the other files in tabs and set the main document (<kbd>⇧⌘M</kbd>).</li>
@@ -215,15 +215,15 @@
   <tr><td><b>“File … not found”</b></td><td>The file isn’t in the TeX distribution either — it’s probably your own. Put it next to the <code>.tex</code> (the card has an <b>Add file to project…</b> button).</td></tr>
   <tr><td><b>The preview is empty</b></td><td>Look at the status: if it says “error”, click it. Otherwise press <kbd>⌘↵</kbd>.</td></tr>
   <tr><td><b>Citations show “?”</b></td><td>Check <code>\bibliography{…}</code> / <code>\addbibresource{…}</code> points to a <code>.bib</code> in the project folder, and compile once more.</td></tr>
-  <tr><td><b>Table of contents / references show “??”</b></td><td>Compile again; Plume re-runs LaTeX automatically but a new label needs one extra pass.</td></tr>
+  <tr><td><b>Table of contents / references show “??”</b></td><td>Compile again; MyLatex re-runs LaTeX automatically but a new label needs one extra pass.</td></tr>
   <tr><td><b>My changes aren’t on disk</b></td><td>A blue dot on the tab means unsaved. Press <kbd>⌘S</kbd>, or turn <b>Auto-save</b> on. Untitled documents need a first <kbd>⌘S</kbd> to get a name.</td></tr>
   <tr><td><b>Autocomplete shows no citations</b></td><td>Make sure the document declares its bibliography (<code>\bibliography{refs}</code> or <code>\addbibresource{refs.bib}</code>) and that file is in the project folder. Switch tabs or compile once to refresh.</td></tr>
   <tr><td><b>Visual mode shows raw code</b></td><td>That’s intentional near your cursor: the element you are editing is shown as source. Move the cursor away to see it formatted. Tables and figures always stay as code.</td></tr>
-  <tr><td><b>“Show in PDF” highlights the wrong spot</b></td><td>Compile first so the PDF matches your text. If the word is inside a formula or split across lines, Plume highlights the whole paragraph instead.</td></tr>
+  <tr><td><b>“Show in PDF” highlights the wrong spot</b></td><td>Compile first so the PDF matches your text. If the word is inside a formula or split across lines, MyLatex highlights the whole paragraph instead.</td></tr>
   <tr><td><b>The window opened on another screen</b></td><td>Drag it by its title bar, or use <b>Window → Zoom</b>.</td></tr>
-  <tr><td><b>Where are my files?</b></td><td>Exactly where you saved them. Plume keeps only temporary build files, deleted on quit.</td></tr>
-  <tr><td><b>Memory use</b></td><td>Plume draws only the pages near the screen and frees the PDF engine when idle. Close tabs you don’t need and keep Visual mode off for very large documents.</td></tr>
-  <tr><td><b>Reset to defaults</b></td><td>Quit Plume, then delete <code>~/Library/WebKit/app.plume.desktop</code> (settings and the saved session).</td></tr>
+  <tr><td><b>Where are my files?</b></td><td>Exactly where you saved them. MyLatex keeps only temporary build files, deleted on quit.</td></tr>
+  <tr><td><b>Memory use</b></td><td>MyLatex draws only the pages near the screen and frees the PDF engine when idle. Close tabs you don’t need and keep Visual mode off for very large documents.</td></tr>
+  <tr><td><b>Reset to defaults</b></td><td>Quit MyLatex, then delete <code>~/Library/WebKit/app.mylatex.desktop</code> (settings and the saved session).</td></tr>
 </table>
 <h3>Privacy</h3>
 <p>Your documents never leave your Mac. The only network access is downloading missing TeX packages from the public TeX bundle, and only when you click <b>Download and compile</b>.</p>

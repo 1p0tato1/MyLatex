@@ -98,7 +98,7 @@ err.downloadNeeded|Download needed|Téléchargement nécessaire|Descarga necesar
 err.clickToJump|— click to jump to the line|— cliquer pour aller à la ligne|— clic para ir a la línea|— klicken, um zur Zeile zu springen
 err.pkgNeeded.one|Package needed|Paquet requis|Paquete necesario|Paket nötig
 err.pkgNeeded.other|Packages needed|Paquets requis|Paquetes necesarios|Pakete nötig
-err.pkgText|Not in the offline package cache. Plume can download it now (internet required).|Absent du cache hors ligne. Plume peut le télécharger maintenant (Internet requis).|No está en la caché sin conexión. Plume puede descargarlo ahora (requiere internet).|Nicht im Offline-Cache. Plume kann es jetzt herunterladen (Internet erforderlich).
+err.pkgText|Not in the offline package cache. MyLatex can download it now (internet required).|Absent du cache hors ligne. MyLatex peut le télécharger maintenant (Internet requis).|No está en la caché sin conexión. MyLatex puede descargarlo ahora (requiere internet).|Nicht im Offline-Cache. MyLatex kann es jetzt herunterladen (Internet erforderlich).
 err.downloadBtn|Download and compile|Télécharger et compiler|Descargar y compilar|Herunterladen und kompilieren
 err.fileNotFound|File not found|Fichier introuvable|Archivo no encontrado|Datei nicht gefunden
 err.fileNotFoundText|It is neither in the TeX bundle nor in your project folder. Add it next to your .tex file.|Il n'est ni dans la distribution TeX ni dans le dossier du projet. Ajoutez-le à côté de votre fichier .tex.|No está en la distribución TeX ni en la carpeta del proyecto. Añádelo junto a tu archivo .tex.|Weder in der TeX-Distribution noch im Projektordner. Fügen Sie es neben Ihrer .tex-Datei hinzu.
@@ -139,11 +139,11 @@ prefs.reset|Reset all settings…|Réinitialiser tous les réglages…|Restablec
 prefs.resetAsk|Reset all settings to their defaults? Your documents are not affected.|Réinitialiser tous les réglages ? Vos documents ne sont pas modifiés.|¿Restablecer todos los ajustes? Tus documentos no se verán afectados.|Alle Einstellungen zurücksetzen? Ihre Dokumente bleiben unverändert.
 menu.prefs|Preferences…|Préférences…|Preferencias…|Einstellungen…
 menu.services|Services|Services|Servicios|Dienste
-menu.hide|Hide Plume|Masquer Plume|Ocultar Plume|Plume ausblenden
+menu.hide|Hide MyLatex|Masquer MyLatex|Ocultar MyLatex|MyLatex ausblenden
 menu.hide_others|Hide Others|Masquer les autres|Ocultar otros|Andere ausblenden
 menu.show_all|Show All|Tout afficher|Mostrar todo|Alle einblenden
-menu.quit|Quit Plume|Quitter Plume|Salir de Plume|Plume beenden
-menu.about|About Plume|À propos de Plume|Acerca de Plume|Über Plume
+menu.quit|Quit MyLatex|Quitter MyLatex|Salir de MyLatex|MyLatex beenden
+menu.about|About MyLatex|À propos de MyLatex|Acerca de MyLatex|Über MyLatex
 menu.file|File|Fichier|Archivo|Ablage
 menu.new|New|Nouveau|Nuevo|Neu
 menu.new_tpl|New from Template|Nouveau à partir d'un modèle|Nuevo desde plantilla|Neu aus Vorlage
@@ -216,7 +216,10 @@ menu.window|Window|Fenêtre|Ventana|Fenster
 menu.minimize|Minimize|Placer dans le Dock|Minimizar|Im Dock ablegen
 menu.zoom|Zoom|Zoom|Zoom|Zoomen
 menu.help|Help|Aide|Ayuda|Hilfe
-menu.guide|Plume Guide|Guide de Plume|Guía de Plume|Plume-Anleitung
+menu.guide|MyLatex Guide|Guide de MyLatex|Guía de MyLatex|MyLatex-Anleitung
+ui.dlTex|Download .tex|Télécharger le .tex|Descargar .tex|.tex herunterladen
+ui.openTex|Open in editor|Ouvrir dans l'éditeur|Abrir en el editor|Im Editor öffnen
+menu.latexref|LaTeX Essentials|L'essentiel du LaTeX|Lo esencial de LaTeX|LaTeX-Grundlagen
 menu.keys|Keyboard Shortcuts|Raccourcis clavier|Atajos de teclado|Tastaturkürzel
 """
 out = {l: {} for l in LANGS}

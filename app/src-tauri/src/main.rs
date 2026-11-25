@@ -23,9 +23,9 @@ static KEEP: AtomicBool = AtomicBool::new(true);
 static CHILD: AtomicU32 = AtomicU32::new(0); // pid du Tectonic en cours
 
 fn cache() -> PathBuf {
-    PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| "/tmp".into())).join("Library/Caches/plume")
+    PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| "/tmp".into())).join("Library/Caches/mylatex")
 }
-fn scratch() -> PathBuf { std::env::temp_dir().join("plume") }
+fn scratch() -> PathBuf { std::env::temp_dir().join("mylatex") }
 
 fn tectonic() -> PathBuf {
     let exe = std::env::current_exe().unwrap_or_default();
@@ -266,11 +266,11 @@ fn build_menu(app: &AppHandle, labels: &HashMap<String, String>) -> tauri::Resul
     let autosave = chk("autosave", "Auto-Save", false)?;
     let keep = chk("keep", "Keep Downloaded Packages After Quit", true)?;
 
-    let plume = SubmenuBuilder::new(app, "Plume").about_with_text(lb("about", "About Plume"), None).separator()
+    let mylatex = SubmenuBuilder::new(app, "MyLatex").about_with_text(lb("about", "About MyLatex"), None).separator()
         .item(&it("prefs", "Preferences…", Some("CmdOrCtrl+,"))?).separator()
         .services_with_text(lb("services", "Services")).separator()
-        .hide_with_text(lb("hide", "Hide Plume")).hide_others_with_text(lb("hide_others", "Hide Others")).show_all_with_text(lb("show_all", "Show All")).separator()
-        .item(&it("quit", "Quit Plume", Some("CmdOrCtrl+Q"))?).build()?;
+        .hide_with_text(lb("hide", "Hide MyLatex")).hide_others_with_text(lb("hide_others", "Hide Others")).show_all_with_text(lb("show_all", "Show All")).separator()
+        .item(&it("quit", "Quit MyLatex", Some("CmdOrCtrl+Q"))?).build()?;
 
     let mut tpl = SubmenuBuilder::new(app, lb("new_tpl", "New from Template"));
     for (id, def) in [("tpl_article", "Article"), ("tpl_icml", "ICML-style paper"), ("tpl_neurips", "NeurIPS-style paper"), ("tpl_ieee", "IEEE conference paper"),
@@ -337,8 +337,8 @@ fn build_menu(app: &AppHandle, labels: &HashMap<String, String>) -> tauri::Resul
         .fullscreen_with_text(lb("fullscreen", "Enter Full Screen")).build()?;
     let window = SubmenuBuilder::new(app, lb("window", "Window")).minimize_with_text(lb("minimize", "Minimize")).maximize_with_text(lb("zoom", "Zoom")).build()?;
     let help = SubmenuBuilder::new(app, lb("help", "Help"))
-        .item(&it("guide", "Plume Guide", Some("CmdOrCtrl+Shift+/"))?).item(&it("keys", "Keyboard Shortcuts", None)?).build()?;
-    app.set_menu(MenuBuilder::new(app).items(&[&plume, &file, &edit, &build, &view, &window, &help]).build()?)?;
+        .item(&it("guide", "MyLatex Guide", Some("CmdOrCtrl+Shift+/"))?).item(&it("latexref", "LaTeX Essentials", None)?).item(&it("keys", "Keyboard Shortcuts", None)?).build()?;
+    app.set_menu(MenuBuilder::new(app).items(&[&mylatex, &file, &edit, &build, &view, &window, &help]).build()?)?;
     let _ = window.set_as_windows_menu_for_nsapp();
     let _ = help.set_as_help_menu_for_nsapp();
     Ok(Checks { auto, spell, autosave, keep, themes, langs, slangs })

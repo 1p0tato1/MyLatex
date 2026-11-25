@@ -1,5 +1,5 @@
 {
-  "name": "plume",
+  "name": "mylatex",
   "private": true,
   "scripts": {
     "build": "rm -rf src/chunks && esbuild editor-src.js --bundle --format=esm --splitting --minify --outdir=src --entry-names=editor --chunk-names=chunks/[name]-[hash]"

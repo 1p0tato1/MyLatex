@@ -1,5 +1,5 @@
-<p align="center"><img src="docs/img/icon.png" width="110" alt="Plume"></p>
-<h1 align="center">Plume</h1>
+<p align="center"><img src="docs/img/icon.png" width="110" alt="MyLatex"></p>
+<h1 align="center">MyLatex</h1>
 <p align="center"><b>Un éditeur LaTeX rapide, léger et natif pour macOS.</b><br>
 Aperçu PDF en direct · mode Visuel · SyncTeX · compilation hors-ligne · correcteur orthographique</p>
 <p align="center">
@@ -8,14 +8,14 @@ Aperçu PDF en direct · mode Visuel · SyncTeX · compilation hors-ligne · cor
   <a href="CONTRIBUTING.md">Contribuer</a>
 </p>
 
-![Plume — code et PDF en direct](docs/img/main-dark.png)
+![MyLatex — code et PDF en direct](docs/img/main-dark.png)
 
-Plume est une petite application (Tauri + Rust, ~55 Mo, ~150–300 Mo de RAM) qui compile le LaTeX avec le moteur [Tectonic](https://tectonic-typesetting.github.io) intégré. **Pas besoin d'installer TeX Live (4 Go+), ni de compte** : tout fonctionne hors-ligne, et la 1re compilation est rapide car les paquets courants sont déjà dans l'app.
+MyLatex est une petite application (Tauri + Rust, ~55 Mo, ~150–300 Mo de RAM) qui compile le LaTeX avec le moteur [Tectonic](https://tectonic-typesetting.github.io) intégré. **Pas besoin d'installer TeX Live (4 Go+), ni de compte** : tout fonctionne hors-ligne, et la 1re compilation est rapide car les paquets courants sont déjà dans l'app.
 
 ## Télécharger et installer
 
-1. Ouvrez la [**dernière version**](../../releases/latest) et téléchargez `Plume.dmg` (Mac Apple Silicon).
-2. Ouvrez-le et glissez **Plume** dans **Applications**.
+1. Ouvrez la [**dernière version**](../../releases/latest) et téléchargez `MyLatex.dmg` (Mac Apple Silicon).
+2. Ouvrez-le et glissez **MyLatex** dans **Applications**.
 3. L'app n'est pas encore notarisée par Apple : la **première fois**, faites **clic droit → Ouvrir** (ou *Réglages Système → Confidentialité et sécurité → Ouvrir quand même*). Ensuite elle s'ouvre normalement.
 
 ## Fonctionnalités
@@ -38,11 +38,11 @@ Plume est une petite application (Tauri + Rust, ~55 Mo, ~150–300 Mo de RAM) qu
 ## Compiler depuis les sources
 
 ```bash
-git clone <ce-depot> plume && cd plume/app
+git clone https://github.com/1p0tato1/MyLatex.git mylatex && cd mylatex/app
 npm ci && npm run build
 tools/fetch-tectonic.sh && tools/make-seed.sh
 cd src-tauri && cargo run          # développement
-cd .. && tools/release.sh          # → ../dist/Plume.app et Plume.dmg
+cd .. && tools/release.sh          # → ../dist/MyLatex.app et MyLatex.dmg
 ```
 
 ## Limites connues

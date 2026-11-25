@@ -1,7 +1,7 @@
 {
-  "productName": "Plume",
-  "version": "0.2.0",
-  "identifier": "app.plume.desktop",
+  "productName": "MyLatex",
+  "version": "0.3.0",
+  "identifier": "app.mylatex.desktop",
   "build": {
     "frontendDist": "../src"
   },
@@ -9,7 +9,9 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Plume",
+        "title": "MyLatex",
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
         "width": 1300,
         "height": 820,
         "minWidth": 700,

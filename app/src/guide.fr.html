@@ -1,4 +1,4 @@
-<h1>Plume — Guide de l’utilisateur</h1>
+<h1>MyLatex — Guide de l’utilisateur</h1>
 <p class="lead">Un éditeur LaTeX rapide et privé pour Mac. Écrivez à gauche, voyez votre PDF à droite. Tout se passe sur votre ordinateur : pas de compte, pas d’installation de TeX, rien n’est envoyé en ligne.</p>
 <div class="toc">
   <a href="#g-start">Démarrage rapide</a><a href="#g-install">Installation</a><a href="#g-window">La fenêtre</a><a href="#g-files">Fichiers et projets</a><a href="#g-compile">Compilation</a><a href="#g-errors">Erreurs et avertissements</a>
@@ -6,7 +6,7 @@
 </div>
 
 <h2 id="g-install">Installation et premier lancement</h2>
-<p>Ouvrez l’image disque <b>Plume.dmg</b> et faites glisser <b>Plume</b> dans <b>Applications</b>. Si macOS indique que l’app « ne peut pas être ouverte car son développeur n’a pas pu être vérifié » (c’est le cas des versions non notarisées par Apple), faites <b>clic droit sur Plume → Ouvrir → Ouvrir</b> une fois ; ou allez dans <b>Réglages Système → Confidentialité et sécurité</b> et cliquez sur <b>Ouvrir quand même</b>. Cette étape n’est nécessaire qu’au premier lancement.</p>
+<p>Ouvrez l’image disque <b>MyLatex.dmg</b> et faites glisser <b>MyLatex</b> dans <b>Applications</b>. Si macOS indique que l’app « ne peut pas être ouverte car son développeur n’a pas pu être vérifié » (c’est le cas des versions non notarisées par Apple), faites <b>clic droit sur MyLatex → Ouvrir → Ouvrir</b> une fois ; ou allez dans <b>Réglages Système → Confidentialité et sécurité</b> et cliquez sur <b>Ouvrir quand même</b>. Cette étape n’est nécessaire qu’au premier lancement.</p>
 
 <h2 id="g-start">Démarrage rapide</h2>
 <ol>
@@ -14,7 +14,7 @@
   <li>Écrivez. Avec <b>Compil. auto</b> activée (par défaut), le PDF se met à jour peu après que vous arrêtez de taper. Sinon, appuyez sur <kbd>⌘↵</kbd> ou sur le bouton <b>Compiler</b>.</li>
   <li>Enregistrez avec <kbd>⌘S</kbd>. Récupérez le PDF avec le bouton <b>PDF</b> au-dessus de l’aperçu (ou <kbd>⇧⌘E</kbd>).</li>
 </ol>
-<div class="tip"><b>Première compilation ?</b> Plume embarque le format LaTeX et les paquets les plus courants : il fonctionne donc tout de suite, hors ligne. Les paquets rares sont téléchargés une seule fois, à votre demande, puis conservés.</div>
+<div class="tip"><b>Première compilation ?</b> MyLatex embarque le format LaTeX et les paquets les plus courants : il fonctionne donc tout de suite, hors ligne. Les paquets rares sont téléchargés une seule fois, à votre demande, puis conservés.</div>
 
 <h2 id="g-window">La fenêtre</h2>
 <table>
@@ -36,11 +36,11 @@
 
 <h2 id="g-files">Fichiers et projets</h2>
 <ul>
-  <li><b>Plume n’écrit jamais dans vos fichiers dans votre dos — sauf si vous activez l’enregistrement automatique.</b> La compilation utilise le texte de l’éditeur ; le fichier sur le disque ne change que lorsque vous enregistrez (<kbd>⌘S</kbd>) ou si l’enregistrement automatique est actif. Seule exception : quand vous modifiez un fichier appartenant à un projet (voir plus bas), il est enregistré avant la compilation pour que <code>\input</code> voie votre changement.</li>
+  <li><b>MyLatex n’écrit jamais dans vos fichiers dans votre dos — sauf si vous activez l’enregistrement automatique.</b> La compilation utilise le texte de l’éditeur ; le fichier sur le disque ne change que lorsque vous enregistrez (<kbd>⌘S</kbd>) ou si l’enregistrement automatique est actif. Seule exception : quand vous modifiez un fichier appartenant à un projet (voir plus bas), il est enregistré avant la compilation pour que <code>\input</code> voie votre changement.</li>
   <li><kbd>⌘S</kbd> enregistrer · <kbd>⇧⌘S</kbd> Enregistrer sous · <kbd>⌥⌘S</kbd> Tout enregistrer · <kbd>⌘W</kbd> fermer l’onglet. Fermer ou quitter avec des modifications non enregistrées demande ce qu’il faut faire.</li>
   <li><b>Enregistrement automatique</b> (désactivé par défaut) : activez l’interrupteur <b>Enreg. auto</b> de la barre du haut, ou <b>Fichier → Enregistrement automatique</b>. Actif, chaque fichier déjà nommé est enregistré environ une seconde après que vous arrêtez de taper, quand vous changez d’onglet ou quittez la fenêtre, et à la fermeture de l’app. Les documents sans titre ne sont jamais enregistrés automatiquement — faites <kbd>⌘S</kbd> une fois pour leur donner un nom.</li>
   <li><b>À l’épreuve des plantages :</b> les onglets ouverts et le texte non enregistré sont restaurés au prochain lancement.</li>
-  <li>Dans le Finder, utilisez <b>Ouvrir avec → Plume</b> sur un fichier <code>.tex</code>, ou glissez-le sur l’icône de Plume.</li>
+  <li>Dans le Finder, utilisez <b>Ouvrir avec → MyLatex</b> sur un fichier <code>.tex</code>, ou glissez-le sur l’icône de MyLatex.</li>
 </ul>
 <h3>Projets de plusieurs fichiers</h3>
 <p>Ouvrez le fichier principal (celui qui contient <code>\documentclass</code>). Tout ce qui se trouve dans le même dossier — <code>.sty</code>, <code>.cls</code>, <code>.bst</code>, <code>.bib</code>, images, sections incluses par <code>\input</code> — est trouvé automatiquement, et BibTeX s’exécute tout seul.</p>
@@ -52,7 +52,7 @@
 <h3>Modèles</h3>
 <p><b>Fichier → Nouveau à partir d’un modèle</b> ouvre dans un nouvel onglet un document prêt à compiler : <i>Article</i>, <i>Article de type ICML</i>, <i>Article de type NeurIPS</i>, <i>Article de conférence IEEE</i> (utilise la vraie classe <code>IEEEtran</code>), <i>Présentation Beamer</i>, <i>CV</i> (utilise <code>moderncv</code>) et <i>Lettre</i>. Les modèles ICML et NeurIPS sont des imitations fondées sur des paquets standard (deux colonnes / une colonne, Times, mise en page habituelle) : les fichiers <code>.sty</code> officiels ne sont pas inclus car ils changent chaque année. Pour soumettre, placez le <code>.sty</code> officiel à côté de votre fichier et décommentez la ligne <code>\usepackage</code> indiquée en tête du modèle.</p>
 <h3>Images</h3>
-<p>Déposez un PNG, JPG ou PDF sur la fenêtre (ou utilisez <b>Image</b> dans la barre d’outils). Plume le copie dans un dossier <code>figures/</code> à côté de votre document s’il se trouve ailleurs, ajoute <code>\usepackage{graphicx}</code> si besoin, et insère une <code>figure</code> avec <code>\includegraphics</code>, <code>\caption{}</code> et <code>\label{}</code>. Enregistrez d’abord un document sans titre pour que le chemin soit relatif.</p>
+<p>Déposez un PNG, JPG ou PDF sur la fenêtre (ou utilisez <b>Image</b> dans la barre d’outils). MyLatex le copie dans un dossier <code>figures/</code> à côté de votre document s’il se trouve ailleurs, ajoute <code>\usepackage{graphicx}</code> si besoin, et insère une <code>figure</code> avec <code>\includegraphics</code>, <code>\caption{}</code> et <code>\label{}</code>. Enregistrez d’abord un document sans titre pour que le chemin soit relatif.</p>
 <h3>Bibliographie</h3>
 <p>Ajoutez <code>\bibliography{refs}</code> (BibTeX) ou <code>\addbibresource{refs.bib}</code> (biblatex) et gardez le <code>.bib</code> à côté de votre <code>.tex</code>. Tapez <code>\cite{</code> pour choisir parmi ses clés.</p>
 
@@ -60,7 +60,7 @@
 <ul>
   <li><b>Compil. auto</b> — activez l’interrupteur <b>Compil. auto</b> de la barre du haut (ou <b>Compilation → Compilation automatique en tapant</b>). Actif, le PDF se met à jour peu après que vous arrêtez de taper ; l’activer lance une compilation immédiate. <kbd>⌘↵</kbd> ou le bouton <b>Compiler</b> compile à tout moment.</li>
   <li>Pendant le téléchargement de paquets, une fine barre sous les onglets et un bandeau en bas de l’aperçu montrent la vraie progression : pourcentage, fichiers, mégaoctets. Une compilation normale n’affiche aucune animation — seulement l’état.</li>
-  <li><b>Hors ligne d’abord.</b> La compilation n’utilise que ce qui est déjà sur votre Mac. S’il manque quelque chose, Plume affiche une carte <b>« Téléchargement nécessaire »</b> au lieu de se connecter en silence. Cliquez sur <b>Télécharger et compiler</b> pour le récupérer (Internet requis) ; il est ensuite conservé.</li>
+  <li><b>Hors ligne d’abord.</b> La compilation n’utilise que ce qui est déjà sur votre Mac. S’il manque quelque chose, MyLatex affiche une carte <b>« Téléchargement nécessaire »</b> au lieu de se connecter en silence. Cliquez sur <b>Télécharger et compiler</b> pour le récupérer (Internet requis) ; il est ensuite conservé.</li>
   <li><b>Garder les paquets téléchargés après la fermeture</b> (menu Compilation) : désactivé, les paquets téléchargés sont nettoyés à la fermeture et le jeu de départ intégré est restauré au lancement suivant.</li>
 </ul>
 
@@ -77,7 +77,7 @@
   <li><b>Zoom :</b> boutons <b>−</b> / <b>+</b>, <kbd>⌘</kbd> + molette, ou pincement sur le trackpad. Il suit le curseur et devient net un instant après. Cliquez sur le pourcentage pour revenir à 100 %.</li>
   <li><b>Pages :</b> la barre affiche la page courante et le total ; utilisez ‹ › pour naviguer.</li>
   <li><b>Bouton PDF :</b> enregistre le PDF compilé où vous voulez (aussi <kbd>⇧⌘E</kbd>). <b>Fichier → Enregistrer le .tex et le PDF ensemble</b> écrit les deux côte à côte.</li>
-  <li><b>Éditeur → PDF (retrouver un mot dans le PDF) :</b> placez le curseur sur un mot (ou sélectionnez une expression) puis cliquez sur <b>Voir dans le PDF</b> au-dessus de l’aperçu, appuyez sur <kbd>⌘J</kbd>, ou faites <kbd>⌘</kbd>-clic sur le mot dans l’éditeur. Le PDF défile jusque-là et le surligne en jaune. Si le même mot apparaît plusieurs fois dans le paragraphe, Plume choisit celui qui correspond à votre position ; s’il est introuvable depuis la ligne source, il cherche dans tout le PDF (appuyez à nouveau pour l’occurrence suivante).</li>
+  <li><b>Éditeur → PDF (retrouver un mot dans le PDF) :</b> placez le curseur sur un mot (ou sélectionnez une expression) puis cliquez sur <b>Voir dans le PDF</b> au-dessus de l’aperçu, appuyez sur <kbd>⌘J</kbd>, ou faites <kbd>⌘</kbd>-clic sur le mot dans l’éditeur. Le PDF défile jusque-là et le surligne en jaune. Si le même mot apparaît plusieurs fois dans le paragraphe, MyLatex choisit celui qui correspond à votre position ; s’il est introuvable depuis la ligne source, il cherche dans tout le PDF (appuyez à nouveau pour l’occurrence suivante).</li>
   <li><b>PDF → source :</b> <b>double-cliquez</b> (ou <kbd>⌘</kbd>-clic) sur un mot du PDF pour aller à sa ligne dans l’éditeur et sélectionner le mot.</li>
 </ul>
 
@@ -120,9 +120,9 @@
 </ul>
 
 <h2 id="g-spell">Correcteur orthographique (anglais et français)</h2>
-<p>Les mots mal orthographiés sont soulignés d’un <b>trait ondulé rouge</b> pendant que vous tapez. Plume embarque deux dictionnaires : <b>anglais</b> (environ 115 000 mots — orthographes américaine et britannique, plus du vocabulaire scientifique et informatique courant) et <b>français</b> (environ 330 000 formes, accents et élisions comme <i>l’homme</i>, <i>qu’il</i> compris). Rien n’est envoyé ailleurs. Seul le texte affiché est vérifié et un dictionnaire n’est chargé qu’au besoin : l’utilisation de mémoire reste minime.</p>
+<p>Les mots mal orthographiés sont soulignés d’un <b>trait ondulé rouge</b> pendant que vous tapez. MyLatex embarque deux dictionnaires : <b>anglais</b> (environ 115 000 mots — orthographes américaine et britannique, plus du vocabulaire scientifique et informatique courant) et <b>français</b> (environ 330 000 formes, accents et élisions comme <i>l’homme</i>, <i>qu’il</i> compris). Rien n’est envoyé ailleurs. Seul le texte affiché est vérifié et un dictionnaire n’est chargé qu’au besoin : l’utilisation de mémoire reste minime.</p>
 <ul>
-  <li><b>Langue : automatique ou manuelle.</b> Le sélecteur à côté de l’interrupteur Orthographe (barre d’outils) est sur <b>Auto</b> par défaut : Plume regarde <code>\usepackage[french]{babel}</code> (ou <code>polyglossia</code>, <code>\selectlanguage</code>…) et, s’il n’y en a pas, les mots les plus courants de votre texte. La langue détectée s’affiche à droite de la barre du bas. Choisissez <b>English</b> ou <b>Français</b> dans le sélecteur (ou dans <b>Édition → Langue du correcteur</b>, ou les Préférences) pour en imposer une.</li>
+  <li><b>Langue : automatique ou manuelle.</b> Le sélecteur à côté de l’interrupteur Orthographe (barre d’outils) est sur <b>Auto</b> par défaut : MyLatex regarde <code>\usepackage[french]{babel}</code> (ou <code>polyglossia</code>, <code>\selectlanguage</code>…) et, s’il n’y en a pas, les mots les plus courants de votre texte. La langue détectée s’affiche à droite de la barre du bas. Choisissez <b>English</b> ou <b>Français</b> dans le sélecteur (ou dans <b>Édition → Langue du correcteur</b>, ou les Préférences) pour en imposer une.</li>
   <li><b>Activer/désactiver</b> avec l’interrupteur <b>Orthographe</b> ou <b>Édition → Vérifier l’orthographe en tapant</b>.</li>
   <li><b>Clic droit</b> sur un mot souligné pour des suggestions : cliquez sur l’une pour remplacer le mot, ou choisissez <b>Ajouter au dictionnaire</b> (retenu pour toujours ; gérez la liste dans les Préférences) ou <b>Ignorer pour cette session</b>. <b>Édition → Ajouter le mot au curseur au dictionnaire</b> fait de même au clavier.</li>
   <li><b>Non vérifiés</b> (pour éviter les fausses alertes) : commandes LaTeX et leurs arguments, maths, commentaires, URL et adresses e-mail, préambule, mots contenant des chiffres, SIGLES, noms en <code>CamelCase</code>, et mots capitalisés au milieu d’une phrase (supposés être des noms propres). En anglais, les contractions et les mots accentués sont aussi ignorés.</li>
@@ -130,23 +130,23 @@
 </ul>
 
 <h2 id="g-prefs">Préférences et langue</h2>
-<p><b>Plume → Préférences…</b> (<kbd>⌘,</kbd>) rassemble tous les réglages dans une fenêtre : langue de l’interface, thème, taille de police, largeur de tabulation, retour à la ligne, ligatures de la police, fermeture automatique des accolades, interrupteurs de compilation/enregistrement, langue du correcteur, votre dictionnaire personnel, et un bouton de réinitialisation.</p>
-<p><b>Changer la langue de l’interface</b> (menus, boutons, messages et ce guide) se fait en un clic : <b>Présentation → Langue</b> ou la ligne <i>Langue</i> des Préférences. Plume existe en <b>English, Français, Español et Deutsch</b> et démarre dans la langue de votre Mac. (Le guide existe en anglais et en français ; les autres langues affichent le guide anglais.) Ajouter une langue ne demande qu’une colonne de traduction — voir le fichier <code>tools/build-lang.py</code> des sources.</p>
+<p><b>MyLatex → Préférences…</b> (<kbd>⌘,</kbd>) rassemble tous les réglages dans une fenêtre : langue de l’interface, thème, taille de police, largeur de tabulation, retour à la ligne, ligatures de la police, fermeture automatique des accolades, interrupteurs de compilation/enregistrement, langue du correcteur, votre dictionnaire personnel, et un bouton de réinitialisation.</p>
+<p><b>Changer la langue de l’interface</b> (menus, boutons, messages et ce guide) se fait en un clic : <b>Présentation → Langue</b> ou la ligne <i>Langue</i> des Préférences. MyLatex existe en <b>English, Français, Español et Deutsch</b> et démarre dans la langue de votre Mac. (Le guide existe en anglais et en français ; les autres langues affichent le guide anglais.) Ajouter une langue ne demande qu’une colonne de traduction — voir le fichier <code>tools/build-lang.py</code> des sources.</p>
 
 <h2 id="g-themes">Thèmes</h2>
 <p><b>Présentation → Thème</b> : <i>Suivre le système</i>, <i>Clair</i>, <i>Clair avec en-tête clair</i>, <i>IntelliJ Light</i>, <i>Islands Light</i>, <i>Fleet Light</i>, <i>Sombre</i>, <i>Darcula</i>, <i>Islands Dark</i>, <i>Fleet Dark</i>, <i>Contraste élevé</i>. <kbd>⇧⌘D</kbd> bascule entre clair et sombre. <kbd>⌘=</kbd> / <kbd>⌘-</kbd> / <kbd>⌘0</kbd> changent la taille de police de l’éditeur.</p>
 
 <h2 id="g-menus">Référence des menus</h2>
-<p>Plume utilise la barre de menus standard de Mac. Tout ce qui suit est aussi accessible depuis la fenêtre.</p>
+<p>MyLatex utilise la barre de menus standard de Mac. Tout ce qui suit est aussi accessible depuis la fenêtre.</p>
 <table>
   <tr><th>Menu</th><th>Éléments</th></tr>
-  <tr><td><b>Plume</b></td><td>À propos · <b>Préférences…</b> <kbd>⌘,</kbd> · Masquer, Masquer les autres · Quitter <kbd>⌘Q</kbd></td></tr>
+  <tr><td><b>MyLatex</b></td><td>À propos · <b>Préférences…</b> <kbd>⌘,</kbd> · Masquer, Masquer les autres · Quitter <kbd>⌘Q</kbd></td></tr>
   <tr><td><b>Fichier</b></td><td>Nouveau <kbd>⌘N</kbd> · Nouveau à partir d’un modèle ▸ · Ouvrir… <kbd>⌘O</kbd> · Fermer l’onglet <kbd>⌘W</kbd> · Enregistrer <kbd>⌘S</kbd> · Enregistrer sous… <kbd>⇧⌘S</kbd> · Tout enregistrer <kbd>⌥⌘S</kbd> · <b>Enregistrement automatique</b> (interrupteur) · Exporter en PDF… <kbd>⇧⌘E</kbd> · Enregistrer le .tex et le PDF ensemble · Afficher dans le Finder</td></tr>
   <tr><td><b>Édition</b></td><td>Annuler <kbd>⌘Z</kbd> · Rétablir <kbd>⇧⌘Z</kbd> · Couper / Copier / Coller / Tout sélectionner · Rechercher et remplacer… <kbd>⌘F</kbd> · Rechercher le suivant <kbd>⌘G</kbd> · Rechercher le précédent <kbd>⇧⌘G</kbd> · Aller à la ligne… <kbd>⌘L</kbd> · Commenter/décommenter <kbd>⌘/</kbd> · Monter/Descendre la ligne <kbd>⌥↑</kbd> <kbd>⌥↓</kbd> · Dupliquer la ligne <kbd>⇧⌥↓</kbd> · <b>Vérifier l’orthographe en tapant</b> (interrupteur) · Langue du correcteur ▸ · Ajouter le mot au curseur au dictionnaire</td></tr>
   <tr><td><b>Compilation</b></td><td>Compiler <kbd>⌘↵</kbd> · Voir le mot dans le PDF <kbd>⌘J</kbd> · Définir comme document principal <kbd>⇧⌘M</kbd> · <b>Compilation automatique en tapant</b> (interrupteur) · <b>Garder les paquets téléchargés après la fermeture</b> (interrupteur)</td></tr>
   <tr><td><b>Présentation</b></td><td>Thème ▸ (11 thèmes) · Basculer clair/sombre <kbd>⇧⌘D</kbd> · Basculer l’éditeur visuel <kbd>⌥⌘V</kbd> · Basculer le plan <kbd>⌥⌘O</kbd> · Basculer l’aperçu PDF <kbd>⌥⌘P</kbd> · <b>Langue ▸</b> · Agrandir/Réduire/Taille réelle <kbd>⌘=</kbd> <kbd>⌘-</kbd> <kbd>⌘0</kbd> (police de l’éditeur) · Onglet suivant/précédent · Passer en plein écran</td></tr>
   <tr><td><b>Fenêtre</b></td><td>Placer dans le Dock, Zoom</td></tr>
-  <tr><td><b>Aide</b></td><td>Guide de Plume <kbd>⇧⌘/</kbd> · Raccourcis clavier</td></tr>
+  <tr><td><b>Aide</b></td><td>Guide de MyLatex <kbd>⇧⌘/</kbd> · Raccourcis clavier</td></tr>
 </table>
 
 <h2 id="keys">Raccourcis clavier</h2>
@@ -184,7 +184,7 @@
   <tr><td>Séparation éditeur / PDF</td><td>Glisser la séparation</td><td>50 / 50</td></tr>
   <tr><td>Onglets ouverts, texte non enregistré, document principal</td><td>Automatique</td><td>—</td></tr>
 </table>
-<p>Pour revenir aux réglages d’usine : <b>Préférences → Réinitialiser tous les réglages…</b> (ou quittez Plume et supprimez <code>~/Library/WebKit/app.plume.desktop</code>).</p>
+<p>Pour revenir aux réglages d’usine : <b>Préférences → Réinitialiser tous les réglages…</b> (ou quittez MyLatex et supprimez <code>~/Library/WebKit/app.mylatex.desktop</code>).</p>
 
 <h2 id="g-tips">Astuces et usages typiques</h2>
 <h3>Rédiger un article</h3>
@@ -199,11 +199,11 @@
 <h3>Travailler hors ligne</h3>
 <p>Tout fonctionne sans Internet, sauf le téléchargement d’un paquet manquant. Avant un voyage, compilez votre document une fois en ligne pour que tout ce dont il a besoin soit en cache (laissez <b>Garder les paquets téléchargés</b> activé).</p>
 <h3>Plusieurs fichiers de travail</h3>
-<p>Plume est une fenêtre unique avec des onglets. Ouvrez tous les fichiers d’un projet comme onglets ; l’onglet ◆ est celui qui est compilé.</p>
+<p>MyLatex est une fenêtre unique avec des onglets. Ouvrez tous les fichiers d’un projet comme onglets ; l’onglet ◆ est celui qui est compilé.</p>
 
 <h2 id="g-templates">Modèles de conférence (ICML, IEEE, NeurIPS, beamer…)</h2>
 <ol>
-  <li>Décompressez le modèle dans un dossier et ouvrez son fichier <code>.tex</code> principal dans Plume.</li>
+  <li>Décompressez le modèle dans un dossier et ouvrez son fichier <code>.tex</code> principal dans MyLatex.</li>
   <li>Gardez les <code>.sty</code>, <code>.cls</code>, <code>.bst</code>, <code>.bib</code> et figures du modèle dans ce dossier.</li>
   <li>Compilez. BibTeX/biblatex s’exécute automatiquement. Si un modèle a besoin d’un paquet absent du cache hors ligne, vous obtenez la carte <b>Téléchargement nécessaire</b>.</li>
   <li>Pour un modèle de plusieurs fichiers, ouvrez les autres fichiers dans des onglets et définissez le document principal (<kbd>⇧⌘M</kbd>).</li>
@@ -215,16 +215,16 @@
   <tr><td><b>« Fichier … introuvable »</b></td><td>Le fichier n’est pas non plus dans la distribution TeX — c’est probablement le vôtre. Mettez-le à côté du <code>.tex</code> (la carte a un bouton <b>Ajouter un fichier au projet…</b>).</td></tr>
   <tr><td><b>L’aperçu est vide</b></td><td>Regardez l’état : s’il indique « erreur », cliquez dessus. Sinon appuyez sur <kbd>⌘↵</kbd>.</td></tr>
   <tr><td><b>Les citations affichent « ? »</b></td><td>Vérifiez que <code>\bibliography{…}</code> / <code>\addbibresource{…}</code> pointe vers un <code>.bib</code> du dossier du projet, puis recompilez.</td></tr>
-  <tr><td><b>Table des matières / références affichent « ?? »</b></td><td>Recompilez ; Plume relance LaTeX automatiquement mais un nouveau label demande une passe de plus.</td></tr>
+  <tr><td><b>Table des matières / références affichent « ?? »</b></td><td>Recompilez ; MyLatex relance LaTeX automatiquement mais un nouveau label demande une passe de plus.</td></tr>
   <tr><td><b>Mes modifications ne sont pas sur le disque</b></td><td>Une pastille bleue sur l’onglet signale un fichier non enregistré. Faites <kbd>⌘S</kbd>, ou activez l’<b>enregistrement automatique</b>. Un document sans titre demande un premier <kbd>⌘S</kbd> pour recevoir un nom.</td></tr>
   <tr><td><b>L’autocomplétion ne propose aucune citation</b></td><td>Vérifiez que le document déclare sa bibliographie (<code>\bibliography{refs}</code> ou <code>\addbibresource{refs.bib}</code>) et que ce fichier est dans le dossier du projet. Changez d’onglet ou compilez une fois pour actualiser.</td></tr>
   <tr><td><b>Le mode Visuel affiche du code brut</b></td><td>C’est voulu près du curseur : l’élément que vous modifiez est montré en source. Éloignez le curseur pour le voir mis en forme. Les tableaux et figures restent toujours en code.</td></tr>
-  <tr><td><b>« Voir dans le PDF » surligne le mauvais endroit</b></td><td>Compilez d’abord pour que le PDF corresponde à votre texte. Si le mot est dans une formule ou coupé entre deux lignes, Plume surligne tout le paragraphe.</td></tr>
+  <tr><td><b>« Voir dans le PDF » surligne le mauvais endroit</b></td><td>Compilez d’abord pour que le PDF corresponde à votre texte. Si le mot est dans une formule ou coupé entre deux lignes, MyLatex surligne tout le paragraphe.</td></tr>
   <tr><td><b>Le correcteur souligne des mots corrects</b></td><td>Clic droit → <b>Ajouter au dictionnaire</b>. Si c’est la mauvaise langue, choisissez-la dans le sélecteur de la barre d’outils au lieu de <b>Auto</b>.</td></tr>
   <tr><td><b>La fenêtre s’est ouverte sur un autre écran</b></td><td>Faites-la glisser par sa barre de titre, ou utilisez <b>Fenêtre → Zoom</b>.</td></tr>
-  <tr><td><b>Où sont mes fichiers ?</b></td><td>Exactement là où vous les avez enregistrés. Plume ne garde que des fichiers temporaires de compilation, supprimés à la fermeture.</td></tr>
-  <tr><td><b>Utilisation de la mémoire</b></td><td>Plume ne dessine que les pages proches de l’écran et libère le moteur PDF au repos. Fermez les onglets inutiles et gardez le mode Visuel désactivé pour les très gros documents.</td></tr>
-  <tr><td><b>Revenir aux réglages d’usine</b></td><td>Préférences → Réinitialiser tous les réglages…, ou quittez Plume puis supprimez <code>~/Library/WebKit/app.plume.desktop</code> (réglages et session enregistrée).</td></tr>
+  <tr><td><b>Où sont mes fichiers ?</b></td><td>Exactement là où vous les avez enregistrés. MyLatex ne garde que des fichiers temporaires de compilation, supprimés à la fermeture.</td></tr>
+  <tr><td><b>Utilisation de la mémoire</b></td><td>MyLatex ne dessine que les pages proches de l’écran et libère le moteur PDF au repos. Fermez les onglets inutiles et gardez le mode Visuel désactivé pour les très gros documents.</td></tr>
+  <tr><td><b>Revenir aux réglages d’usine</b></td><td>Préférences → Réinitialiser tous les réglages…, ou quittez MyLatex puis supprimez <code>~/Library/WebKit/app.mylatex.desktop</code> (réglages et session enregistrée).</td></tr>
 </table>
 <h3>Confidentialité</h3>
 <p>Vos documents ne quittent jamais votre Mac. Le seul accès réseau est le téléchargement de paquets TeX manquants depuis la distribution TeX publique, et uniquement quand vous cliquez sur <b>Télécharger et compiler</b>.</p>

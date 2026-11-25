@@ -9,21 +9,34 @@ const MARKS = { textbf: "vis-b", textit: "vis-i", emph: "vis-i", texttt: "vis-tt
 const MATH_ENVS = /^(equation|align|alignat|gather|multline|eqnarray|flalign)\*?$/;
 
 // ---- widgets
+// CodeMirror ignore les clics sur un widget: on place nous-mêmes le curseur dans la source,
+// à proportion de l'endroit cliqué (approximatif: le rendu et la source n'ont pas la même largeur).
+const clickable = (el, view, tex) => {
+  el.onmousedown = (e) => {
+    if (e.button !== 0 || e.metaKey) return;
+    e.preventDefault();
+    const from = view.posAtDOM(el), box = el.getBoundingClientRect(), i = view.state.doc.toString().indexOf(tex, from);
+    const frac = Math.min(1, Math.max(0, (e.clientX - box.left) / (box.width || 1)));
+    view.dispatch({ selection: { anchor: i < 0 ? from + 1 : i + Math.round(frac * tex.length) } });
+    view.focus();
+  };
+  return el;
+};
 class MathW extends WidgetType {
   constructor(tex, display, macros) { super(); this.tex = tex; this.display = display; this.macros = macros; }
   eq(o) { return o.tex === this.tex && o.display === this.display; }
-  toDOM() {
+  toDOM(view) {
     const el = document.createElement(this.display ? "div" : "span");
     el.className = this.display ? "vis-math vis-dmath" : "vis-math";
     try { katex.render(this.tex, el, { displayMode: this.display, throwOnError: false, macros: { ...this.macros }, strict: "ignore", trust: false }); }
     catch { el.textContent = this.tex; }
-    return el;
+    return clickable(el, view, this.tex);
   }
 }
 class TextW extends WidgetType {
   constructor(text, cls) { super(); this.text = text; this.cls = cls; }
   eq(o) { return o.text === this.text && o.cls === this.cls; }
-  toDOM() { const s = document.createElement("span"); s.className = this.cls; s.textContent = this.text; return s; }
+  toDOM(view) { const s = document.createElement("span"); s.className = this.cls; s.textContent = this.text; return clickable(s, view, this.text); }
 }
 
 // ---- utilitaires de scan
@@ -64,6 +77,7 @@ function build(state) {
   const inTaken = (p) => taken.some(([a, b]) => p >= a && p < b);
   const hide = (a, b) => { if (b > a && !touch(a, b)) repl.push([a, b, Decoration.replace({})]); };
   const add = (a, b, d) => all.push([a, b, d]);
+  const mark = (a, b, cls) => { if (b > a) add(a, b, Decoration.mark({ class: cls })); }; // CodeMirror refuse les marques vides (\textbf{})
 
   // commentaires: ranges à ignorer pour les formules
   const com = [], cre = /(^|[^\\])(%.*)$/gm; let m;
@@ -101,10 +115,10 @@ function build(state) {
     if (HEADS[name] !== undefined) {
       const L = lineOf(a), alone = /^\s*$/.test(t.slice(L.from, a)) && /^\s*(%.*)?$/.test(t.slice(c + 1, L.to));
       if (alone && name !== "paragraph") add(L.from, L.from, Decoration.line({ class: HEADS[name] }));
-      else add(o, c, Decoration.mark({ class: "vis-hi" })); // titre "run-in" (\paragraph{..} texte...): seul le titre est stylé
+      else mark(o, c, "vis-hi"); // titre "run-in" (\paragraph{..} texte...): seul le titre est stylé
       hide(a, o); hide(c, c + 1);
     } else if (name in MARKS) {
-      hide(a, o); hide(c, c + 1); if (MARKS[name]) add(o, c, Decoration.mark({ class: MARKS[name] }));
+      hide(a, o); hide(c, c + 1); if (MARKS[name]) mark(o, c, MARKS[name]);
     } else if (name === "label") {
       hide(a, c + 1);
     } else if (name === "footnote") {
@@ -162,6 +176,7 @@ const theme = EditorView.theme({
   ".vis-dim": { color: "var(--muted)", fontFamily: "'JetBrains Mono', ui-monospace, monospace", fontSize: "0.72em", opacity: "0.8" },
   ".vis-pre": { color: "var(--muted)", fontFamily: "'JetBrains Mono', ui-monospace, monospace", fontSize: "0.7em", lineHeight: "1.5" },
   ".vis-item": { paddingLeft: "1.6em !important", textIndent: "-1.1em" },
+  ".vis-item *": { textIndent: "0" }, // sinon l'alinéa négatif est hérité par les formules (chevauchement)
   ".vis-bullet": { display: "inline-block", width: "1.1em", textIndent: "0", color: "var(--muted)" },
   ".vis-chip": { color: "var(--accent)", fontFamily: "Inter, system-ui, sans-serif", fontSize: "0.82em", background: "color-mix(in srgb, var(--accent) 14%, transparent)", borderRadius: "4px", padding: "0 5px", cursor: "pointer" },
   ".vis-math": { display: "inline-block", verticalAlign: "baseline" },

@@ -1,6 +1,7 @@
 import { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection, Decoration } from "@codemirror/view";
 import { EditorState, Prec, Compartment, StateField, StateEffect, EditorSelection } from "@codemirror/state";
-import { autocompletion, snippet, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
+import { autocompletion, acceptCompletion, snippet, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
+import { continueItem } from "./list.js";
 import { latexSource, data as completionData } from "./complete.js";
 import { defaultKeymap, history, historyKeymap, indentWithTab, undo, redo, toggleComment, moveLineUp, moveLineDown, copyLineDown } from "@codemirror/commands";
 import { StreamLanguage, syntaxHighlighting, HighlightStyle, bracketMatching, indentUnit } from "@codemirror/language";
@@ -94,7 +95,9 @@ export function createEditor(parent, { onChange, onCursor, onSync }) {
     vc.of([]), sc.of([]), cb.of(pairs), pc.of([EditorState.tabSize.of(4), indentUnit.of("  "), EditorView.lineWrapping]), marksField,
     EditorState.languageData.of(() => [{ closeBrackets: { brackets: ["(", "[", "{", "$"] } }]),
     autocompletion({ override: [latexSource], icons: false, activateOnTyping: true, maxRenderedOptions: 60 }),
+    Prec.highest(keymap.of([{ key: "Tab", run: acceptCompletion }])), // Entrée est déjà gérée par autocompletion()
     Prec.high(keymap.of([
+      { key: "Enter", run: continueItem },
       { key: "Mod-b", run: (v) => (wrap(v, "\\textbf{", "}"), true) },
       { key: "Mod-i", run: (v) => (wrap(v, "\\textit{", "}"), true) },
       { key: "Mod-u", run: (v) => (wrap(v, "\\underline{", "}"), true) },

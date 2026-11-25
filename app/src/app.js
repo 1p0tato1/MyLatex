@@ -130,7 +130,7 @@ function renderTabs() {
   }));
   $("tabs").querySelector(".on")?.scrollIntoView({ block: "nearest", inline: "nearest" });
 }
-const setTitle = () => win.setTitle(cur ? `${cur.name}${cur.dirty ? " — " + tr("msg.edited") : ""} — Plume` : "Plume").catch(() => {});
+const setTitle = () => win.setTitle(cur ? `${cur.name}${cur.dirty ? " — " + tr("msg.edited") : ""} — MyLatex` : "MyLatex").catch(() => {});
 
 function show(t) {
   if (cur === t) return;
@@ -557,7 +557,7 @@ ob.ondblclick = () => { setOW(210); localStorage.outW = 210; };
 const fetchGuide = async () => { for (const l of [curLang(), "en"]) { const r = await fetch(`guide.${l}.html`); if (r.ok) return r.text(); } return ""; };
 async function openGuide(anchor) {
   const body = $("gbody");
-  if (!body.firstChild) body.innerHTML = await fetchGuide();
+  body.innerHTML = await fetchGuide();
   $("guide").classList.add("on");
   const target = anchor && body.querySelector(anchor); target ? target.scrollIntoView() : (body.closest(".gc").scrollTop = 0);
 }
@@ -565,6 +565,28 @@ const closeGuide = () => { $("guide").classList.remove("on"); $("gbody").replace
 $("gx").onclick = closeGuide;
 $("guide").addEventListener("mousedown", (e) => { if (e.target === $("guide")) closeGuide(); });
 $("gbody").addEventListener("click", (e) => { const a = e.target.closest("a[href^='#']"); if (a) { e.preventDefault(); $("gbody").querySelector(a.getAttribute("href"))?.scrollIntoView({ behavior: "smooth" }); } });
+
+// ---------- fiches LaTeX (latexref.js), dans la même fenêtre que le guide
+async function openLatexRef() {
+  const { sheets } = await import("./latexref.js"), list = sheets((fr, en) => (curLang() === "fr" ? fr : en));
+  const el = (tag, text, props) => Object.assign(document.createElement(tag), { textContent: text, ...props });
+  const toc = el("div", "", { className: "toc" }), parts = [el("h1", tr("menu.latexref")), toc];
+  for (const [id, title, tex] of list) {
+    toc.append(el("a", title, { href: "#ref-" + id }));
+    const bar = el("div", "", { className: "toc" });
+    bar.append(
+      el("button", tr("ui.dlTex"), { onclick: async () => {
+        const p = await invoke("save_dialog", { name: `latex-${id}.tex`, dir: null });
+        if (!p) return;
+        try { await invoke("write_file", { path: p, text: tex }); status("ok", tr("msg.saved", { name: base(p) })); } catch (e) { status("err", tr("msg.saveFailed", { e })); }
+      } }),
+      el("button", tr("ui.openTex"), { onclick: () => { closeGuide(); newTab(tex); } }),
+    );
+    parts.push(el("h2", title, { id: "ref-" + id }), bar, el("pre", tex.slice(tex.indexOf("\\maketitle") + 11, tex.indexOf("\\end{document}")).trim()));
+  }
+  $("gbody").replaceChildren(...parts);
+  $("guide").classList.add("on"); $("gbody").closest(".gc").scrollTop = 0;
+}
 
 // ---------- orthographe anglaise (soulignement rouge; clic droit = suggestions)
 let spellOn = localStorage.spell !== "0";
@@ -676,7 +698,7 @@ const acts = {
   auto: () => setAutoCompile(!autoOn),
   visual: () => setVisual(!visualOn),
   outline: () => setOutline(!outOn),
-  guide: () => openGuide(), keys: () => openGuide("#keys"),
+  guide: () => openGuide(), latexref: () => openLatexRef(), keys: () => openGuide("#keys"),
   prefs: () => openPrefs(), pdfpane: () => togglePdfPane(),
   move_up: () => ed.moveUp(), move_down: () => ed.moveDown(), dup_line: () => ed.dupLine(),
   slang_auto: () => setSpellMode("auto"), slang_en: () => setSpellMode("en"), slang_fr: () => setSpellMode("fr"),
