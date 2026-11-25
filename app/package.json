@@ -1,0 +1,21 @@
+{
+  "name": "plume",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf src/chunks && esbuild editor-src.js --bundle --format=esm --splitting --minify --outdir=src --entry-names=editor --chunk-names=chunks/[name]-[hash]"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6",
+    "@codemirror/language": "^6",
+    "@codemirror/legacy-modes": "^6",
+    "@codemirror/search": "^6",
+    "@codemirror/state": "^6",
+    "@codemirror/view": "^6",
+    "@lezer/highlight": "^1",
+    "esbuild": "^0.24"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "^6.20.4",
+    "katex": "^0.19.1"
+  }
+}

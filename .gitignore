@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+app/src-tauri/target/
+app/src-tauri/gen/
+# artefacts de build (régénérés)
+dist/
+/Plume.app/
+app/src/editor.js
+app/src/chunks/
+# binaires lourds: récupérés/fabriqués par app/tools/fetch-tectonic.sh et make-seed.sh
+bin/
+*.bak

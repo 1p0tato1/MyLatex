@@ -1,0 +1,247 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Plume</title>
+<style>
+  @font-face { font-family:"JetBrains Mono"; src:url(fonts/jetbrains-mono-latin-400-normal.woff2); font-weight:400; font-style:normal }
+  @font-face { font-family:"JetBrains Mono"; src:url(fonts/jetbrains-mono-latin-400-italic.woff2); font-weight:400; font-style:italic }
+  @font-face { font-family:"JetBrains Mono"; src:url(fonts/jetbrains-mono-latin-700-normal.woff2); font-weight:700; font-style:normal }
+  @font-face { font-family:"Inter"; src:url(fonts/inter-latin-400-normal.woff2); font-weight:400 }
+  @font-face { font-family:"Inter"; src:url(fonts/inter-latin-500-normal.woff2); font-weight:500 }
+  @font-face { font-family:"Inter"; src:url(fonts/inter-latin-600-normal.woff2); font-weight:600 }
+  /* Palettes inspirées de la "New UI" JetBrains (Light / Dark) */
+  :root {
+    --bg:#f7f8fa; --ed:#fff; --panel:#fff; --fg:#1e1f22; --muted:#6c707e; --line:#ebecf0; --hover:#ebecf0; --gut:#aeb3c2;
+    --accent:#3574f0; --accent-fg:#fff; --pv:#e6e8ec; --sel:#a6d2ff; --err-bg:#fff2f2; --err-fg:#b3261e; --run:#369650; --lineh:#f7e8541f;
+    --c-cmd:#0033b3; --c-env:#00627a; --c-com:#8c8c8c; --c-math:#067d17; --c-br:#871094; --c-err:#d52b2b;
+    color-scheme: light;
+  }
+  [data-theme=dark] {
+    --bg:#2b2d30; --ed:#1e1f22; --panel:#2b2d30; --fg:#dfe1e5; --muted:#868a91; --line:#393b40; --hover:#393b41; --gut:#4b5059;
+    --accent:#548af7; --accent-fg:#fff; --pv:#1a1b1e; --sel:#214283; --err-bg:#2f1f21; --err-fg:#f75464; --run:#5fb865; --lineh:#ffffff0a;
+    --c-cmd:#cf8e6d; --c-env:#56a8f5; --c-com:#7a7e85; --c-math:#6aab73; --c-br:#c77dbb; --c-err:#f75464;
+    color-scheme: dark;
+  }
+  /* Light with Light Header: en-tête clair */
+  [data-theme=light-header] { --hdr:#fff; --bg:#f7f8fa; --ed:#fff; --panel:#fff; --fg:#1e1f22; --muted:#6c707e; --line:#ebecf0; --hover:#ebecf0; --gut:#aeb3c2;
+    --accent:#3574f0; --accent-fg:#fff; --pv:#e6e8ec; --sel:#a6d2ff; --err-bg:#fff2f2; --err-fg:#b3261e; --run:#369650; --lineh:#f7e8541f;
+    --c-cmd:#0033b3; --c-env:#00627a; --c-com:#8c8c8c; --c-math:#067d17; --c-br:#871094; --c-err:#d52b2b; color-scheme:light }
+  /* IntelliJ Light (classique) */
+  [data-theme=intellij] { --hdr:#f2f2f2; --bg:#f2f2f2; --ed:#fff; --panel:#f2f2f2; --fg:#000; --muted:#808080; --line:#d1d1d1; --hover:#dcdcdc; --gut:#999;
+    --accent:#2675bf; --accent-fg:#fff; --pv:#e2e2e2; --sel:#a6d2ff; --err-bg:#fff0f0; --err-fg:#c00; --run:#59a869; --lineh:#ffeb782e;
+    --c-cmd:#000080; --c-env:#660e7a; --c-com:#808080; --c-math:#008000; --c-br:#000; --c-err:#f00; color-scheme:light }
+  /* Islands (panneaux arrondis sur fond) */
+  [data-theme=islands-light] { --hdr:#e9eaee; --bg:#e9eaee; --ed:#fff; --panel:#fff; --fg:#1e1f22; --muted:#6c707e; --line:#dfe1e5; --hover:#dcdee3; --gut:#aeb3c2;
+    --accent:#3574f0; --accent-fg:#fff; --pv:#f7f8fa; --sel:#a6d2ff; --err-bg:#fff2f2; --err-fg:#b3261e; --run:#369650; --lineh:#f7e8541f;
+    --c-cmd:#0033b3; --c-env:#00627a; --c-com:#8c8c8c; --c-math:#067d17; --c-br:#871094; --c-err:#d52b2b; color-scheme:light }
+  [data-theme=islands-dark] { --hdr:#16171a; --bg:#16171a; --ed:#1e1f22; --panel:#1e1f22; --fg:#dfe1e5; --muted:#868a91; --line:#2b2d30; --hover:#2b2d30; --gut:#4b5059;
+    --accent:#548af7; --accent-fg:#fff; --pv:#1e1f22; --sel:#214283; --err-bg:#2f1f21; --err-fg:#f75464; --run:#5fb865; --lineh:#ffffff0a;
+    --c-cmd:#cf8e6d; --c-env:#56a8f5; --c-com:#7a7e85; --c-math:#6aab73; --c-br:#c77dbb; --c-err:#f75464; color-scheme:dark }
+  [data-theme^=islands] main { gap:6px; padding:0 8px 8px }
+  [data-theme^=islands] #ed, [data-theme^=islands] #right { border-radius:12px; overflow:hidden; border:1px solid var(--line) }
+  [data-theme^=islands] #bar { background:transparent; width:6px } [data-theme^=islands] header { border-bottom-color:transparent }
+  /* Fleet */
+  [data-theme=fleet-dark] { --hdr:#181818; --bg:#181818; --ed:#181818; --panel:#1f1f1f; --fg:#d6d6dd; --muted:#7f7f88; --line:#2b2b2b; --hover:#2a2a2e; --gut:#4c4c55;
+    --accent:#7f8cff; --accent-fg:#111; --pv:#121212; --sel:#3a3d5c; --err-bg:#2a1717; --err-fg:#f14c4c; --run:#87c379; --lineh:#ffffff08;
+    --c-cmd:#e394dc; --c-env:#82d2ce; --c-com:#6d6d78; --c-math:#afcb85; --c-br:#ebc88d; --c-err:#f14c4c; color-scheme:dark }
+  [data-theme=fleet-light] { --hdr:#f4f4f6; --bg:#f4f4f6; --ed:#fff; --panel:#fff; --fg:#1f1f23; --muted:#777783; --line:#e3e3e8; --hover:#ebebef; --gut:#b4b4bf;
+    --accent:#5b61f0; --accent-fg:#fff; --pv:#eceef1; --sel:#cfd3ff; --err-bg:#fff1f1; --err-fg:#d1242f; --run:#3d8c3d; --lineh:#5b61f00d;
+    --c-cmd:#9b3bb5; --c-env:#0b8a8f; --c-com:#8a8a96; --c-math:#3d8c3d; --c-br:#b57614; --c-err:#d1242f; color-scheme:light }
+  /* Darcula classique */
+  [data-theme=darcula] {
+    --bg:#3c3f41; --ed:#2b2b2b; --panel:#3c3f41; --fg:#a9b7c6; --muted:#808080; --line:#323232; --hover:#4b4d4f; --gut:#606366;
+    --accent:#4a88c7; --accent-fg:#fff; --pv:#2b2b2b; --sel:#214283; --err-bg:#3b2a2a; --err-fg:#ff6b68; --run:#499c54; --lineh:#ffffff0b;
+    --c-cmd:#cc7832; --c-env:#ffc66d; --c-com:#808080; --c-math:#6a8759; --c-br:#9876aa; --c-err:#ff6b68;
+    color-scheme: dark;
+  }
+  /* Contraste élevé */
+  [data-theme=hc] {
+    --bg:#000; --ed:#000; --panel:#000; --fg:#fff; --muted:#b0b0b0; --line:#6b6b6b; --hover:#2a2a2a; --gut:#9a9a9a;
+    --accent:#5ea2ff; --accent-fg:#000; --pv:#0b0b0b; --sel:#1a4f9c; --err-bg:#2b0000; --err-fg:#ff7b7b; --run:#5fe070; --lineh:#ffffff17;
+    --c-cmd:#ff9e57; --c-env:#6cc4ff; --c-com:#a6a6a6; --c-math:#7ee787; --c-br:#e0a8ff; --c-err:#ff6b6b;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box }
+  ::-webkit-scrollbar { width:12px; height:12px } ::-webkit-scrollbar-corner { background:transparent }
+  ::-webkit-scrollbar-thumb { background:color-mix(in srgb, var(--fg) 22%, transparent); border-radius:6px; border:3px solid transparent; background-clip:content-box }
+  ::-webkit-scrollbar-thumb:hover { background:color-mix(in srgb, var(--fg) 38%, transparent); background-clip:content-box }
+  body { margin:0; height:100vh; display:flex; flex-direction:column; background:var(--bg); color:var(--fg);
+    font:13px/1.4 Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; -webkit-font-smoothing:antialiased }
+  header { display:flex; align-items:stretch; gap:2px; padding:0 8px 0 0; background:var(--hdr, var(--bg)); border-bottom:1px solid var(--line); height:38px }
+  #tabs { display:flex; flex:0 1 auto; min-width:0; overflow-x:auto; scrollbar-width:none }
+  .tab { display:flex; align-items:center; gap:7px; max-width:220px; padding:0 8px 0 14px; color:var(--muted); font-weight:500;
+    cursor:default; white-space:nowrap; flex:0 0 auto; border-bottom:3px solid transparent; position:relative; top:0 }
+  .tab:hover { background:var(--hover); color:var(--fg) }
+  .tab.on { color:var(--fg); border-bottom-color:var(--accent); background:transparent }
+  .tab span { overflow:hidden; text-overflow:ellipsis }
+  .tab.main span::before { content:"◆ "; color:var(--accent); font-size:10px }
+  .tab i { width:7px; height:7px; border-radius:50%; background:var(--accent); opacity:0; flex:0 0 auto }
+  .tab.dirty i { opacity:1 }
+  .tab b { width:16px; height:16px; border-radius:4px; display:grid; place-items:center; font-weight:400; font-size:14px; line-height:1; opacity:.55 }
+  .tab b:hover { background:var(--line); opacity:1 }
+  .sp { flex:1 }
+  button { display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 10px; border-radius:6px; align-self:center;
+    border:1px solid var(--line); background:transparent; color:var(--fg); font:inherit; font-weight:500; cursor:pointer }
+  button:hover { background:var(--hover) }
+  button.primary { border-color:var(--line); background:transparent; color:var(--fg) }
+  button.primary svg { fill:var(--run); stroke:var(--run); width:13px; height:13px }
+  button.primary:hover { background:var(--hover) }
+  button.icon { padding:0; width:26px; justify-content:center; border:0; color:var(--muted); font-size:17px }
+  svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+  #guide { display:none; position:fixed; inset:0; z-index:50; background:#000b; align-items:flex-start; justify-content:center; padding:4vh 20px }
+  #guide.on { display:flex }
+  .gc { position:relative; width:min(860px,100%); max-height:92vh; overflow:auto; background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:0 20px 60px #0008; padding:8px 34px 30px }
+  #gx { position:sticky; top:8px; float:right; font-size:20px; z-index:2; background:var(--panel) }
+  #gbody { line-height:1.6; font-size:13.5px } #gbody h1 { font-size:26px; margin:22px 0 4px } #gbody h2 { font-size:18px; margin:30px 0 8px; padding-top:12px; border-top:1px solid var(--line) }
+  #gbody h3 { font-size:14px; margin:18px 0 4px; color:var(--accent) } #gbody p, #gbody li { color:var(--fg) } #gbody .lead { color:var(--muted); font-size:15px; margin:0 0 14px }
+  #gbody a { color:var(--accent) } #gbody ul, #gbody ol { padding-left:22px } #gbody li { margin:3px 0 }
+  #gbody kbd { font:600 11.5px 'JetBrains Mono', ui-monospace, monospace; padding:1px 6px; border:1px solid var(--line); border-bottom-width:2px; border-radius:5px; background:var(--bg); white-space:nowrap }
+  #gbody code { font:12px 'JetBrains Mono', ui-monospace, monospace; background:var(--bg); padding:1px 5px; border-radius:4px }
+  #gbody table { width:100%; border-collapse:collapse; margin:8px 0 } #gbody td, #gbody th { text-align:left; padding:5px 10px; border-bottom:1px solid var(--line); vertical-align:top }
+  #gbody th { color:var(--muted); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em }
+  #gbody .toc { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 6px } #gbody .toc a { padding:3px 10px; border:1px solid var(--line); border-radius:99px; text-decoration:none; font-size:12px }
+  #gbody .tip { border-left:3px solid var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent); padding:8px 12px; border-radius:0 8px 8px 0; margin:10px 0 }
+  .vis .cm-gutters { display:none }
+  #bar.edge { width:8px; background:color-mix(in srgb, var(--accent) 35%, var(--line)) }
+  #vbar select { max-width:120px } #vbar #slsel { margin-left:auto } #vbar #spb { margin-left:2px }
+  #slang { margin-left:auto; text-transform:uppercase; letter-spacing:.06em }
+  #prefs { display:none; position:fixed; inset:0; z-index:50; background:#000b; align-items:flex-start; justify-content:center; padding:5vh 20px } #prefs.on { display:flex }
+  .pc { width:min(620px,100%) } #px { position:sticky; top:8px; float:right; font-size:20px; z-index:2; background:var(--panel) }
+  #pbody h1 { font-size:20px; margin:18px 0 6px } #pbody h2 { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:22px 0 4px; font-weight:600 }
+  .prow { display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid var(--line) } .prow > span { flex:1 } .prow small { display:block; color:var(--muted); font-size:11.5px; margin-top:2px }
+  .prow select, .prow input[type=number] { height:26px; border:1px solid var(--line); border-radius:6px; background:var(--ed); color:var(--fg); font:inherit; padding:0 6px; outline:none }
+  .prow input[type=number] { width:64px } .prow .tog { margin:0 } .pwords { display:flex; flex-wrap:wrap; gap:6px; padding:8px 0 }
+  .pwords span { padding:2px 4px 2px 10px; border:1px solid var(--line); border-radius:99px; display:inline-flex; align-items:center; gap:4px } .pwords b { cursor:pointer; opacity:.6; width:16px; text-align:center } .pwords b:hover { opacity:1 }
+  #ed { display:flex; flex-direction:column } #ed .cm-editor { flex:1 1 0; min-height:0; height:auto !important }
+  #vbar { display:flex; align-items:center; gap:2px; padding:3px 8px; flex:0 0 auto; border-bottom:1px solid var(--line); background:var(--bg); overflow-x:auto; scrollbar-width:none }
+  #vbar button { height:24px; padding:0 8px; border:0; color:var(--muted); font-weight:500; white-space:nowrap }
+  #vbar button:hover { background:var(--hover); color:var(--fg) } #vbar button b, #vbar button i, #vbar button u { color:var(--fg); font-size:13.5px }
+  #vbar select { height:24px; border:1px solid var(--line); border-radius:6px; background:var(--ed); color:var(--fg); font:inherit; padding:0 4px; margin:0 4px; outline:none }
+  .vs { width:1px; height:16px; background:var(--line); margin:0 4px; flex:0 0 auto }
+  #obar { width:4px; flex:0 0 auto; cursor:col-resize; margin-left:-2px; z-index:2; background:transparent; transition:background .15s }
+  #obar:hover, #obar.on { background:var(--accent) } #outline.off + #obar { display:none }
+  #tsb { align-self:center; margin:0 2px 0 8px; color:var(--muted) } #tsb.on { color:var(--accent) }
+  #outline { width:var(--ow, 210px); flex:0 0 auto; display:flex; flex-direction:column; border-right:1px solid var(--line); background:var(--bg); min-height:0 }
+  #outline.off { display:none }
+  #outline .oh { padding:8px 12px 6px; color:var(--muted); font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase }
+  #olist { overflow:auto; padding:0 6px 8px; flex:1 }
+  #olist div { padding:3px 8px; border-radius:5px; cursor:pointer; color:var(--fg); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:.85 }
+  #olist div:hover { background:var(--hover); opacity:1 } #olist div.on { background:color-mix(in srgb, var(--accent) 20%, transparent); color:var(--accent); opacity:1 }
+  #olist .l1 { padding-left:20px } #olist .l2 { padding-left:32px; font-size:12px } #olist .l3 { padding-left:44px; font-size:12px; color:var(--muted) }
+  #olist .none { color:var(--muted); cursor:default; padding:6px 8px }
+  #st.warn::before { background:#e5a50a } #st.clickable { cursor:pointer }
+  #err.warn header { background:linear-gradient(90deg, #e5a50a22, transparent 60%) } #err.warn header .dot { background:#e5a50a; box-shadow:0 0 0 4px #e5a50a33 }
+  #err.warn .e { border-left-color:#e5a50a } #err.warn .e .loc { background:#e5a50a22; color:#e5a50a }
+  .e.act { border-left-color:var(--accent); cursor:default } .e.act .loc { background:color-mix(in srgb, var(--accent) 18%, transparent); color:var(--accent) }
+  .e.act button { margin-top:8px; background:var(--accent); color:var(--accent-fg); border:0; font-weight:600 }
+  .seg { display:flex; align-self:center; border:1px solid var(--line); border-radius:6px; overflow:hidden; margin-left:8px }
+  .seg button { border:0; border-radius:0; height:24px; padding:0 10px; color:var(--muted) }
+  .seg button.on { background:color-mix(in srgb, var(--accent) 20%, transparent); color:var(--accent) }
+  button.primary.auto { border-color:color-mix(in srgb, var(--run) 60%, var(--line)) }
+  .tog { display:inline-flex; align-items:center; gap:8px; margin-left:6px; padding:0 6px; border:0; background:transparent; color:var(--muted); font-weight:500; white-space:nowrap }
+  .tog:hover { background:transparent; color:var(--fg) } .tog.on { color:var(--fg) }
+  .tog .trk { position:relative; width:30px; height:17px; border-radius:99px; background:color-mix(in srgb, var(--fg) 25%, transparent); transition:background .15s }
+  .tog .trk::after { content:""; position:absolute; top:2px; left:2px; width:13px; height:13px; border-radius:50%; background:#fff; box-shadow:0 1px 2px #0005; transition:transform .15s }
+  .tog.on .trk { background:var(--accent) } .tog.on .trk::after { transform:translateX(13px) }
+  #vbar .tog { height:24px; margin-left:auto } #vbar .tog .trk { width:26px; height:15px } #vbar .tog.on .trk::after { transform:translateX(11px) } #vbar .tog .trk::after { width:11px; height:11px }
+  #spell { display:none; position:fixed; z-index:60; min-width:170px; padding:4px; border-radius:9px; background:var(--panel); border:1px solid var(--line); box-shadow:0 10px 30px #0006 }
+  #spell.on { display:block } #spell div { padding:5px 10px; border-radius:5px; cursor:pointer; white-space:nowrap } #spell div:hover { background:var(--hover) }
+  #spell .sg { font-weight:600; color:var(--accent) } #spell .hd { cursor:default; color:var(--muted); font-size:11px } #spell hr { border:0; border-top:1px solid var(--line); margin:4px 0 }
+  #st { color:var(--muted); display:flex; align-items:center; gap:7px; margin:0 10px; align-self:center }
+  #st::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--muted) }
+  #st.ok::before { background:#22c55e } #st.err::before { background:#ef4444 }
+  #st.busy::before { background:#f59e0b; animation:p 1s infinite } @keyframes p { 50% { opacity:.3 } }
+  #prog { height:2px; background:transparent; position:relative; overflow:hidden }
+  #prog::after { content:""; position:absolute; top:0; left:0; height:100%; width:0; background:var(--accent) }
+  #prog.det::after { width:var(--p); transition:width .3s }
+  #dl { display:none; position:absolute; left:10px; bottom:10px; padding:7px 12px; border-radius:9px; z-index:1;
+    background:var(--panel); border:1px solid var(--line); color:var(--muted); box-shadow:0 4px 20px #0003;
+    font:12px ui-monospace, Menlo, monospace; max-width:calc(100% - 20px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+  #dl b { color:var(--accent); font-weight:600 }
+  main { flex:1; display:flex; min-height:0 }
+  #ed { flex:1 1 50%; min-width:0; overflow:hidden; background:var(--ed) }
+  #bar { width:3px; cursor:col-resize; background:var(--line); transition:background .15s }
+  #bar:hover, #bar.on { background:var(--accent) }
+  #right { flex:1 1 0; min-width:0; position:relative; display:flex; flex-direction:column; background:var(--pv) }
+  #pv { flex:1; overflow:auto; padding:16px 12px 4px; position:relative; min-height:0 }
+  #pv > div { margin:0 auto 14px; position:relative; box-shadow:0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent); background:#fff } #pv canvas { display:block }
+  #pvbar { display:flex; align-items:center; gap:4px; height:32px; padding:0 8px; flex:0 0 auto; color:var(--muted);
+    background:var(--bg); border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums; user-select:none }
+  #pvbar > i { flex:1 }
+  #pvbar button { height:22px; min-width:22px; padding:0 5px; justify-content:center; border:0; color:var(--muted) }
+  #pvbar button:hover { background:var(--hover); color:var(--fg) }
+  #pvbar b { color:var(--fg); font-weight:600 }
+  #pvbar .sep { width:1px; height:16px; background:var(--line); margin:0 6px }
+  #zl { min-width:46px } #pvbar svg { width:14px; height:14px }
+  .hit { position:absolute; pointer-events:none; border-radius:3px; background:#facc1566; outline:2px solid #facc15;
+    animation:hit 2.2s ease-out forwards }
+  @keyframes hit { 0%,55% { opacity:1 } 100% { opacity:0 } }
+  #err { display:none; position:absolute; left:12px; right:12px; bottom:12px; max-height:55%; flex-direction:column; z-index:3;
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 40px #0006; overflow:hidden }
+  #err.on { display:flex }
+  #err header { padding:10px 14px; gap:10px; align-items:center; border-bottom:1px solid var(--line); min-height:0;
+    background:linear-gradient(90deg, #ef444422, transparent 60%) }
+  #err header .dot { width:9px; height:9px; border-radius:50%; background:#ef4444; box-shadow:0 0 0 4px #ef444433 }
+  #err header strong { font-weight:600 } #err header span { color:var(--muted) }
+  #err header .sp { flex:1 }
+  #err header button { height:22px; width:22px; padding:0; justify-content:center; border:0; background:transparent; color:var(--muted); font-size:16px }
+  #err header button.txt { width:auto; padding:0 8px; font-size:12px }
+  #errlist { overflow:auto; padding:6px }
+  .e { display:block; padding:9px 11px; border-radius:8px; cursor:pointer; border-left:3px solid #ef4444; margin:4px 0; background:var(--bg) }
+  .e:hover { background:var(--hover) }
+  .e .m { font-weight:600; color:var(--fg); line-height:1.4 }
+  .e .loc { display:inline-block; margin-top:5px; padding:1px 8px; border-radius:99px; background:#ef444422; color:#ef4444; font-size:11.5px; font-weight:600 }
+  .e pre { margin:7px 0 0; padding:7px 9px; border-radius:6px; background:var(--panel); color:var(--muted); font:12px/1.5 ui-monospace, Menlo, monospace; overflow:auto; white-space:pre }
+  .e pre em { color:var(--accent); font-style:normal; font-weight:600 }
+  #raw { display:none; margin:0; padding:10px 14px; border-top:1px solid var(--line); overflow:auto; max-height:200px; color:var(--muted);
+    font:11.5px/1.5 ui-monospace, Menlo, monospace; white-space:pre-wrap; background:var(--bg) }
+  #raw.on { display:block }
+  footer { display:flex; gap:16px; padding:2px 12px; height:24px; align-items:center; background:var(--bg); border-top:1px solid var(--line); color:var(--muted); font-size:11.5px; user-select:none }
+</style>
+<header>
+  <button class="icon" id="tsb" data-i18n-title="ui.outlineToggle"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+  <div id="tabs"></div>
+  <button class="icon" id="add" data-i18n-title="ui.newTitle">+</button>
+  <div class="sp"></div>
+  <button id="asv" class="tog" role="switch" aria-checked="false" data-i18n-title="ui.autosaveTip"><span data-i18n="ui.autosave"></span><i class="trk"></i></button>
+  <button id="acs" class="tog" role="switch" aria-checked="true" data-i18n-title="ui.autocompileTip"><span data-i18n="ui.autocompile"></span><i class="trk"></i></button>
+  <div class="seg"><button id="mcode" class="on" data-i18n="ui.code" data-i18n-title="ui.codeTip"></button><button id="mvis" data-i18n="ui.visual" data-i18n-title="ui.visualTip"></button></div>
+  <div id="st"></div>
+  <button class="primary" id="run" data-i18n-title="ui.compileTip"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg><span id="runl" data-i18n="ui.compile"></span></button>
+</header>
+<div id="prog"></div>
+<main>
+  <div id="outline"><div class="oh" data-i18n="ui.outline"></div><div id="olist"></div></div><div id="obar" data-i18n-title="ui.dragResize"></div>
+  <div id="ed"><div id="vbar">
+    <button data-a="bold" data-i18n-title="ui.bold"><b>B</b></button><button data-a="italic" data-i18n-title="ui.italic"><i>I</i></button><button data-a="underline" data-i18n-title="ui.underline"><u>U</u></button>
+    <select id="hsel" data-i18n-title="ui.headingTip"><option value="" data-i18n="ui.normalText"></option><option value="section" data-i18n="ui.section"></option><option value="subsection" data-i18n="ui.subsection"></option><option value="subsubsection" data-i18n="ui.subsubsection"></option><option value="paragraph" data-i18n="ui.paragraph"></option></select>
+    <span class="vs"></span>
+    <button data-a="ul" data-i18n="ui.listBullet" data-i18n-title="ui.listBulletTip"></button><button data-a="ol" data-i18n="ui.listNum" data-i18n-title="ui.listNumTip"></button>
+    <span class="vs"></span>
+    <button data-a="math" data-i18n="ui.inline" data-i18n-title="ui.inlineTip"></button><button data-a="dmath" data-i18n="ui.display" data-i18n-title="ui.displayTip"></button>
+    <span class="vs"></span>
+    <button data-a="cite" data-i18n="ui.cite" data-i18n-title="ui.citeTip"></button><button data-a="ref" data-i18n="ui.ref" data-i18n-title="ui.refTip"></button><button data-a="img" data-i18n="ui.image" data-i18n-title="ui.imageTip"></button>
+    <select id="slsel" data-i18n-title="ui.spellLangTip"><option value="auto" data-i18n="ui.langAuto"></option><option value="en">English</option><option value="fr">Français</option></select>
+    <button id="spb" class="tog" role="switch" aria-checked="true" data-i18n-title="ui.spellTip"><span data-i18n="ui.spelling"></span><i class="trk"></i></button>
+  </div></div><div id="bar"></div>
+  <div id="right">
+    <div id="pvbar"><button id="zo" data-i18n-title="ui.zoomOut">−</button><button id="zl" data-i18n-title="ui.zoomReset">100%</button><button id="zi" data-i18n-title="ui.zoomIn">+</button>
+      <span class="sep"></span><button id="syncb" data-i18n-title="ui.showInPdfTip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>&nbsp;<span data-i18n="ui.showInPdf"></span></button>
+      <i></i><button id="pp" data-i18n-title="ui.prevPage">‹</button><span><span data-i18n="ui.page"></span> <b id="pn">–</b> / <span id="pt">–</span></span><button id="np" data-i18n-title="ui.nextPage">›</button><i></i>
+      <span class="sep"></span><button id="dlpdf" data-i18n-title="ui.downloadTip"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>&nbsp;PDF</button></div>
+    <div id="pv"></div><div id="dl"></div>
+    <div id="err"><header><i class="dot"></i><strong id="errt"></strong><span id="errc"></span><i class="sp"></i>
+      <button class="txt" id="rawb" data-i18n="ui.fullLog"></button><button id="errx" data-i18n-title="ui.dismiss">×</button></header>
+      <div id="errlist"></div><pre id="raw"></pre></div>
+  </div>
+</main>
+<footer><span id="pos"></span><span id="words"></span><span id="slang"></span></footer>
+<div id="spell"></div>
+<div id="guide"><div class="gc"><button id="gx" class="icon" data-i18n-title="ui.close">×</button><div id="gbody"></div></div></div>
+<div id="prefs"><div class="gc pc"><button id="px" class="icon" data-i18n-title="ui.close">×</button><div id="pbody"></div></div></div>
+<script>
+  // filet de sécurité: affiche toute erreur de démarrage (au lieu d'une fenêtre vide)
+  const showErr = (m) => { const d = document.createElement("pre"); d.style.cssText = "position:fixed;left:8px;right:8px;bottom:8px;z-index:99;margin:0;padding:10px;background:#7f1d1d;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;border-radius:8px"; d.textContent = m; document.body.append(d); };
+  addEventListener("error", (e) => showErr("Error: " + e.message + " (" + (e.filename || "").split("/").pop() + ":" + e.lineno + ")"));
+  addEventListener("unhandledrejection", (e) => showErr("Error: " + (e.reason && (e.reason.stack || e.reason.message) || e.reason)));
+</script>
+<script type="module" src="./app.js"></script>

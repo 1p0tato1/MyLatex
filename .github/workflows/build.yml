@@ -1,0 +1,25 @@
+name: Build
+on:
+  push: { branches: [main], tags: ["v*"] }
+  pull_request:
+permissions: { contents: write }
+jobs:
+  mac:
+    runs-on: macos-14   # Apple Silicon
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with: { workspaces: app/src-tauri }
+      - run: npm ci && npm run build
+        working-directory: app
+      - run: app/tools/fetch-tectonic.sh && app/tools/make-seed.sh
+      - run: app/tools/release.sh
+        env: { VERSION: "${{ github.ref_type == 'tag' && github.ref_name || '0.0.0-ci' }}" }
+      - uses: actions/upload-artifact@v4
+        with: { name: Plume-dmg, path: dist/Plume.dmg }
+      - if: github.ref_type == 'tag'
+        run: gh release create "$GITHUB_REF_NAME" dist/Plume.dmg --generate-notes --title "Plume $GITHUB_REF_NAME"
+        env: { GH_TOKEN: "${{ github.token }}" }

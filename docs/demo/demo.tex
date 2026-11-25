@@ -1,0 +1,34 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\title{Learning Across Domains}
+\author{Ada Lovelace}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study how a classifier trained on one distribution behaves on another, and give a simple bound on the target error.
+\end{abstract}
+
+\section{Introduction}
+Machine learning models are often deployed in conditions that differ from training. We recieve data from a source domain $\mathcal{S}$ but are evaluated on a target domain $\mathcal{T}$.
+
+\section{Main result}\label{sec:main}
+\paragraph{The theory.} The $\mathcal H\Delta\mathcal H$-divergence measures how well a pair of hypotheses can tell the two domains apart.
+
+\begin{equation}\label{eq:bound}
+  \epsilon_{\mathcal T}(h) \le \epsilon_{\mathcal S}(h) + \tfrac12\, d_{\mathcal H\Delta\mathcal H}(\mathcal S,\mathcal T) + \lambda .
+\end{equation}
+
+Equation~\eqref{eq:bound} shows that a small divergence implies good transfer.
+
+\begin{itemize}
+  \item \textbf{Bound:} source error plus divergence.
+  \item \emph{Intuition:} similar domains transfer well.
+\end{itemize}
+
+\section{Conclusion}
+Section~\ref{sec:main} gives the bound; tighter versions are left for future work.
+\end{document}
