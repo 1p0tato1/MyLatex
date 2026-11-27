@@ -27,6 +27,9 @@ MyLatex est une petite application (Tauri + Rust, ~55 Mo, ~150–300 Mo de RAM) 
 - 🔤 **Orthographe** français et anglais (auto ou manuel), soulignement rouge, suggestions, dictionnaire perso
 - 🧯 **Erreurs lisibles** : cartes cliquables, soulignement dans le code, compteur de warnings
 - 📑 **Projets** : onglets, plan du document, multi-fichiers, glisser-déposer d'images, sauvegarde auto, restauration de session
+- 🗂 **Dossiers** : ouvrir un dossier entier (⇧⌘O), ses fichiers en onglets, document principal détecté ; les fichiers modifiés ailleurs sont rechargés, jamais écrasés sans prévenir
+- 📋 **Aperçu PDF** : sélectionner et copier du texte ; arrêter une compilation trop longue avec ⌘.
+- 🔔 **Mises à jour** : signale les nouvelles versions (désactivable)
 - 📄 **Modèles** : article, ICML, NeurIPS, IEEE, beamer, CV, lettre
 - 🎨 **Thèmes** façon JetBrains · interface en 4 langues (EN/FR/ES/DE) · menu macOS natif
 

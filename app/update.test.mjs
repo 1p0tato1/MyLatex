@@ -1,0 +1,12 @@
+import assert from "node:assert";
+import { isNewer, newVersion } from "./src/update.js";
+assert(isNewer("0.4.0", "0.3.0"));
+assert(isNewer("0.10.0", "0.9.0"));
+assert(!isNewer("0.3.0", "0.3.0"));
+assert(!isNewer("0.2.0", "0.3.0"));
+globalThis.fetch = async () => ({ ok: true, json: async () => ({ tag_name: "v0.4.0" }) });
+assert.equal(await newVersion("0.3.0"), "0.4.0");
+assert.equal(await newVersion("0.4.0"), null);
+globalThis.fetch = async () => { throw new Error("offline"); };
+assert.equal(await newVersion("0.3.0"), null);
+console.log("ok");

@@ -7,10 +7,10 @@
 #   xcrun notarytool store-credentials mylatex-notary --apple-id VOTRE@ID --team-id TEAMID --password MOT_DE_PASSE_SPECIFIQUE_APP
 set -euo pipefail
 cd "$(dirname "$0")/.."
-ROOT="$(cd .. && pwd)"; DIST="$ROOT/dist"; APP="$DIST/MyLatex.app"; VERSION="${VERSION:-0.3.0}"; VERSION="${VERSION#v}"
+ROOT="$(cd .. && pwd)"; DIST="$ROOT/dist"; APP="$DIST/MyLatex.app"; VERSION="${VERSION:-0.4.0}"; VERSION="${VERSION#v}"
 ID="${DEVELOPER_ID:--}"
 
-echo "▶ compilation (release)"; (cd src-tauri && cargo build --release)
+echo "▶ compilation (release)"; (cd src-tauri && MYLATEX_VERSION="$VERSION" cargo build --release)
 rm -rf "$DIST"; mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp src-tauri/target/release/mylatex "$APP/Contents/MacOS/mylatex"
 cp "$ROOT/bin/tectonic" "$APP/Contents/Resources/tectonic"

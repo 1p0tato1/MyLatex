@@ -58,6 +58,18 @@ ui.downloadTip|Download PDF (⇧⌘E) — double-click the PDF to jump to source
 ui.fullLog|Full log|Journal complet|Registro completo|Vollständiges Protokoll
 ui.dismiss|Dismiss (Esc)|Fermer (Échap)|Cerrar (Esc)|Schließen (Esc)
 ui.close|Close (Esc)|Fermer (Échap)|Cerrar (Esc)|Schließen (Esc)
+ui.folderTip|Show/hide the files of the open folder|Afficher/masquer les fichiers du dossier ouvert|Mostrar/ocultar los archivos de la carpeta abierta|Dateien des geöffneten Ordners ein-/ausblenden
+ui.closeFolder|Close folder|Fermer le dossier|Cerrar carpeta|Ordner schließen
+update.available|A new version of MyLatex is available ({v})|Une nouvelle mise à jour de MyLatex est disponible ({v})|Hay una nueva versión de MyLatex ({v})|Eine neue Version von MyLatex ist verfügbar ({v})
+update.download|Download|Télécharger|Descargar|Herunterladen
+ui.stop|Stop|Arrêter|Detener|Stopp
+ui.stopTip|Stop the compilation (⌘.)|Arrêter la compilation (⌘.)|Detener la compilación (⌘.)|Kompilierung anhalten (⌘.)
+msg.reloaded|{name} reloaded from disk|{name} rechargé depuis le disque|{name} recargado desde el disco|{name} neu geladen
+msg.changedOnDisk|{name} changed on disk: not saved (⌘S to choose)|{name} modifié ailleurs : non enregistré (⌘S pour choisir)|{name} cambió en el disco: no guardado (⌘S para elegir)|{name} wurde extern geändert: nicht gesichert (⌘S zum Wählen)
+dlg.diskTitle|“{name}” was changed outside MyLatex|« {name} » a été modifié en dehors de MyLatex|«{name}» se modificó fuera de MyLatex|„{name}“ wurde außerhalb von MyLatex geändert
+dlg.diskDesc|Overwrite the file with your version, or reload it from disk and drop your unsaved changes (⌘Z brings them back).|Écraser le fichier avec votre version, ou le recharger depuis le disque et abandonner vos modifications non enregistrées (⌘Z les retrouve).|Sobrescribir el archivo con tu versión, o recargarlo desde el disco y descartar los cambios sin guardar (⌘Z los recupera).|Datei mit Ihrer Version überschreiben, oder neu laden und ungesicherte Änderungen verwerfen (⌘Z stellt sie wieder her).
+dlg.overwrite|Overwrite|Écraser|Sobrescribir|Überschreiben
+dlg.reload|Reload|Recharger|Recargar|Neu laden
 ui.noSections|No sections yet|Aucune section|Aún no hay secciones|Noch keine Abschnitte
 msg.ready|ready|prêt|listo|bereit
 msg.compiled|compiled|compilé|compilado|kompiliert
@@ -116,6 +128,8 @@ prefs.general|General|Général|General|Allgemein
 prefs.language|Language|Langue|Idioma|Sprache
 prefs.languageTip|Language of the menus, buttons and guide|Langue des menus, boutons et du guide|Idioma de los menús, botones y guía|Sprache der Menüs, Schaltflächen und Anleitung
 prefs.theme|Theme|Thème|Tema|Design
+prefs.updates|Check for updates|Rechercher les mises à jour|Buscar actualizaciones|Nach Updates suchen
+prefs.updatesTip|Asks GitHub at launch whether a newer version exists|Demande à GitHub au lancement s'il existe une version plus récente|Pregunta a GitHub al iniciar si hay una versión más reciente|Fragt beim Start bei GitHub nach einer neueren Version
 prefs.editor|Editor|Éditeur|Editor|Editor
 prefs.fontSize|Font size|Taille de police|Tamaño de fuente|Schriftgröße
 prefs.tabSize|Tab width|Largeur de tabulation|Ancho de tabulación|Tab-Breite
@@ -155,6 +169,7 @@ menu.tpl_beamer|Beamer presentation|Présentation Beamer|Presentación Beamer|Be
 menu.tpl_cv|CV / Résumé|CV|CV / Currículum|Lebenslauf
 menu.tpl_letter|Letter|Lettre|Carta|Brief
 menu.open|Open…|Ouvrir…|Abrir…|Öffnen…
+menu.open_folder|Open Folder…|Ouvrir un dossier…|Abrir carpeta…|Ordner öffnen…
 menu.close|Close Tab|Fermer l'onglet|Cerrar pestaña|Tab schließen
 menu.save|Save|Enregistrer|Guardar|Sichern
 menu.save_as|Save As…|Enregistrer sous…|Guardar como…|Sichern unter…
@@ -184,6 +199,7 @@ menu.slang_auto|Automatic|Automatique|Automático|Automatisch
 menu.addword|Add Word at Cursor to Dictionary|Ajouter le mot au curseur au dictionnaire|Añadir la palabra del cursor al diccionario|Wort am Cursor zum Wörterbuch hinzufügen
 menu.build|Build|Compilation|Compilar|Erstellen
 menu.compile|Compile|Compiler|Compilar|Kompilieren
+menu.stop|Stop Compilation|Arrêter la compilation|Detener compilación|Kompilierung anhalten
 menu.sync|Show Word in PDF|Voir le mot dans le PDF|Ver la palabra en el PDF|Wort im PDF zeigen
 menu.main|Set as Main Document (Toggle)|Définir comme document principal (bascule)|Establecer como documento principal|Als Hauptdokument festlegen (umschalten)
 menu.auto|Auto-Compile While Typing|Compilation automatique en tapant|Autocompilar al escribir|Beim Tippen automatisch kompilieren

@@ -1,5 +1,5 @@
 use std::{fs, io::{BufRead, BufReader, Read, Write}, path::{Path, PathBuf}, process::{Command, Stdio},
-    sync::{atomic::{AtomicBool, AtomicU32, Ordering}, Arc, Mutex}, time::Duration};
+    sync::{atomic::{AtomicBool, AtomicU32, Ordering}, Arc, Mutex}, time::{Duration, Instant}};
 use tauri::{ipc::Response, menu::{CheckMenuItem, CheckMenuItemBuilder, MenuBuilder, MenuItemBuilder, SubmenuBuilder},
     AppHandle, Emitter, Manager, RunEvent, State, Wry};
 use std::collections::HashMap;
@@ -21,6 +21,26 @@ fn dir_size(p: &Path) -> u64 {
 // Cache des packages Tectonic: supprimé à la fermeture sauf si "garder" est coché.
 static KEEP: AtomicBool = AtomicBool::new(true);
 static CHILD: AtomicU32 = AtomicU32::new(0); // pid du Tectonic en cours
+static STOP: AtomicBool = AtomicBool::new(false); // bouton Stop
+// Délais de sécurité (document qui boucle); plus large quand des paquets sont à télécharger.
+const LIMIT_OFFLINE: Duration = Duration::from_secs(180);
+const LIMIT_ONLINE: Duration = Duration::from_secs(900);
+
+#[tauri::command]
+fn stop_compile() { STOP.store(true, Ordering::Relaxed) }
+
+// Tue `pid` (notre Tectonic) si Stop est demandé ou si `limit` est dépassée, tant que `done` est faux. Renvoie la raison.
+fn watchdog(pid: u32, done: Arc<AtomicBool>, limit: Duration) -> std::thread::JoinHandle<Option<&'static str>> {
+    std::thread::spawn(move || {
+        let start = Instant::now();
+        while !done.load(Ordering::Relaxed) {
+            let why = if STOP.load(Ordering::Relaxed) { Some("stop") } else if start.elapsed() > limit { Some("timeout") } else { None };
+            if why.is_some() { let _ = Command::new("kill").args(["-9", &pid.to_string()]).status(); return why; }
+            std::thread::sleep(Duration::from_millis(100));
+        }
+        None
+    })
+}
 
 fn cache() -> PathBuf {
     PathBuf::from(std::env::var("HOME").unwrap_or_else(|_| "/tmp".into())).join("Library/Caches/mylatex")
@@ -96,6 +116,13 @@ fn take_pending() -> Vec<String> { std::mem::take(&mut *PENDING.lock().unwrap())
 #[tauri::command]
 fn quit(app: AppHandle) { app.exit(0) }
 
+// Version réelle de l'app: celle du tag, passée par tools/release.sh (sinon Cargo.toml)
+#[tauri::command]
+fn app_version() -> &'static str { option_env!("MYLATEX_VERSION").unwrap_or(env!("CARGO_PKG_VERSION")) }
+
+#[tauri::command]
+fn open_releases() { let _ = Command::new("open").arg("https://github.com/1p0tato1/MyLatex/releases/latest").status(); }
+
 #[tauri::command]
 fn reveal(path: String) { let _ = Command::new("open").args(["-R", &path]).status(); }
 
@@ -110,6 +137,21 @@ fn write_file(path: String, text: String) -> Result<(), String> { fs::write(path
 async fn open_dialog() -> Vec<String> {
     rfd::AsyncFileDialog::new().add_filter("LaTeX", &["tex"]).pick_files().await
         .map(|v| v.iter().map(|f| f.path().to_string_lossy().into()).collect()).unwrap_or_default()
+}
+
+#[tauri::command]
+async fn folder_dialog() -> Option<String> {
+    Some(rfd::AsyncFileDialog::new().pick_folder().await?.path().to_string_lossy().into())
+}
+
+// Contenu d'un dossier (un seul niveau): (nom, est un dossier). Fichiers cachés ignorés, dossiers d'abord.
+#[tauri::command]
+fn list_dir(path: String) -> Vec<(String, bool)> {
+    let mut v: Vec<(String, bool)> = fs::read_dir(path).map(|d| d.flatten()
+        .map(|e| (e.file_name().to_string_lossy().into_owned(), e.path().is_dir()))
+        .filter(|(n, _)| !n.starts_with('.')).collect()).unwrap_or_default();
+    v.sort_by_key(|(n, is_dir)| (!is_dir, n.to_lowercase()));
+    v
 }
 
 #[tauri::command]
@@ -159,6 +201,8 @@ fn run_once(app: &AppHandle, cached: bool, cwd: &Path, out: &Path, text: &str) -
     // taille du cache en direct (Mo téléchargés)
     // (inutile en mode hors-ligne -C: rien n'est téléchargé, on évite de parcourir le cache en boucle)
     let done = Arc::new(AtomicBool::new(false));
+    let limit = if cached { LIMIT_OFFLINE } else { LIMIT_ONLINE };
+    let guard = watchdog(child.id(), done.clone(), limit);
     if !cached {
         let (d, a2, base) = (done.clone(), app.clone(), dir_size(&cache()));
         std::thread::spawn(move || while !d.load(Ordering::Relaxed) {
@@ -176,7 +220,12 @@ fn run_once(app: &AppHandle, cached: bool, cwd: &Path, out: &Path, text: &str) -
     let ok = child.wait().map(|s| s.success()).unwrap_or(false);
     done.store(true, Ordering::Relaxed);
     CHILD.store(0, Ordering::Relaxed);
-    Ok((ok, t.join().unwrap_or_default(), log))
+    match guard.join().unwrap_or(None) {
+        Some("stop") => return Err("STOPPED".into()),
+        Some(_) => return Err(format!("error: compilation stopped after {} seconds (infinite loop in the document?)\n{log}", limit.as_secs())),
+        None => {}
+    }
+    Ok((ok,t.join().unwrap_or_default(), log))
 }
 
 // Noms de fichiers signalés "not found" dans le log TeX: `File `x.sty' not found`.
@@ -228,6 +277,7 @@ async fn pick_file() -> Option<String> {
 // Compile `text` (dans le dossier de `path` pour les \input relatifs); renvoie les octets du PDF ou le log d'erreur.
 #[tauri::command]
 async fn compile(app: AppHandle, id: String, path: Option<String>, text: String, online: Option<bool>) -> Result<Response, String> {
+    STOP.store(false, Ordering::Relaxed);
     tauri::async_runtime::spawn_blocking(move || {
         let cwd = path.as_deref().and_then(|p| Path::new(p).parent().map(|p| p.to_path_buf()))
             .unwrap_or_else(|| { fs::create_dir_all(scratch()).ok(); scratch() });
@@ -277,7 +327,8 @@ fn build_menu(app: &AppHandle, labels: &HashMap<String, String>) -> tauri::Resul
         ("tpl_beamer", "Beamer presentation"), ("tpl_cv", "CV / Résumé"), ("tpl_letter", "Letter")] { tpl = tpl.item(&it(id, def, None)?); }
     let tpl = tpl.build()?;
     let file = SubmenuBuilder::new(app, lb("file", "File"))
-        .item(&it("new", "New", Some("CmdOrCtrl+N"))?).item(&tpl).item(&it("open", "Open…", Some("CmdOrCtrl+O"))?).separator()
+        .item(&it("new", "New", Some("CmdOrCtrl+N"))?).item(&tpl).item(&it("open", "Open…", Some("CmdOrCtrl+O"))?)
+        .item(&it("open_folder", "Open Folder…", Some("CmdOrCtrl+Shift+O"))?).separator()
         .item(&it("close", "Close Tab", Some("CmdOrCtrl+W"))?).separator()
         .item(&it("save", "Save", Some("CmdOrCtrl+S"))?).item(&it("save_as", "Save As…", Some("CmdOrCtrl+Shift+S"))?)
         .item(&it("save_all", "Save All", Some("CmdOrCtrl+Alt+S"))?).item(&autosave).separator()
@@ -304,6 +355,7 @@ fn build_menu(app: &AppHandle, labels: &HashMap<String, String>) -> tauri::Resul
 
     let build = SubmenuBuilder::new(app, lb("build", "Build"))
         .item(&it("compile", "Compile", Some("CmdOrCtrl+Return"))?)
+        .item(&it("stop", "Stop Compilation", Some("CmdOrCtrl+."))?)
         .item(&it("sync", "Show Word in PDF", Some("CmdOrCtrl+J"))?).separator()
         .item(&it("main", "Set as Main Document (Toggle)", Some("CmdOrCtrl+Shift+M"))?).separator()
         .item(&auto).item(&keep).build()?;
@@ -349,8 +401,8 @@ fn main() {
     tauri::Builder::default()
         .setup(|app| { let c = build_menu(app.handle(), &HashMap::new())?; app.manage(Mutex::new(c)); Ok(()) })
         .on_menu_event(|app, e| { let _ = app.emit("menu", e.id().as_ref()); })
-        .invoke_handler(tauri::generate_handler![set_menu_labels, set_lang_check, set_slang_check, copy_into, pick_file, synctex, set_theme_check, set_keep, set_check, take_pending, quit, reveal, read_file, write_file,
-            open_dialog, save_dialog, ask_save, export_pdf, compile])
+        .invoke_handler(tauri::generate_handler![set_menu_labels, set_lang_check, set_slang_check, copy_into, pick_file, synctex, set_theme_check, set_keep, set_check, take_pending, quit, stop_compile, app_version, open_releases, reveal, read_file, write_file,
+            open_dialog, folder_dialog, list_dir, save_dialog, ask_save, export_pdf, compile])
         .build(tauri::generate_context!())
         .expect("tauri")
         .run(|app, e| match e {
@@ -367,4 +419,26 @@ fn main() {
             }
             _ => {}
         });
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn watchdog_kills_a_process_that_exceeds_the_limit() {
+        use std::{sync::{atomic::AtomicBool, Arc}, time::Duration};
+        let mut child = std::process::Command::new("sleep").arg("30").spawn().unwrap();
+        let guard = super::watchdog(child.id(), Arc::new(AtomicBool::new(false)), Duration::from_millis(200));
+        assert!(!child.wait().unwrap().success());
+        assert_eq!(guard.join().unwrap(), Some("timeout"));
+    }
+
+    #[test]
+    fn list_dir_hides_dotfiles_and_puts_folders_first() {
+        let d = std::env::temp_dir().join(format!("mylatex-list-{}", std::process::id()));
+        std::fs::create_dir_all(d.join("zfig")).unwrap();
+        for f in ["b.tex", "A.bib", ".hidden"] { std::fs::write(d.join(f), "").unwrap(); }
+        let got = super::list_dir(d.to_string_lossy().into());
+        std::fs::remove_dir_all(&d).unwrap();
+        assert_eq!(got, [("zfig".into(), true), ("A.bib".into(), false), ("b.tex".into(), false)]);
+    }
 }

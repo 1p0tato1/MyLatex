@@ -1,6 +1,8 @@
 import * as pdfjs from "./pdf.min.mjs";
 import { t as tr, loadLang, apply as applyI18n, detectLang, lang as curLang, LANGS, menuLabels } from "./i18n.js";
 import { createEditor } from "./editor.js";
+import { newVersion } from "./update.js";
+import { diskState, diff, norm } from "./disk.js";
 pdfjs.GlobalWorkerOptions.workerSrc = "./pdf.worker.min.mjs";
 const { invoke } = window.__TAURI__.core;
 const { listen } = window.__TAURI__.event;
@@ -113,12 +115,12 @@ const words = () => {
 
 // ---------- tabs
 function mk(path, text, dirty = false) {
-  const t = { id: String(nextId++), path, name: path ? base(path) : "", state: ed.newState(text), dirty, ok: null, log: "", pdf: null, pages: 0, top: 0 };
+  const t = { id: String(nextId++), path, disk: path ? text : null,name: path ? base(path) : "", state: ed.newState(text), dirty, ok: null, log: "", pdf: null, pages: 0, top: 0 };
   if (!path) { let n = 1; const used = new Set(tabs.map((x) => x.name)); const u = tr("msg.untitled"); while (used.has(n === 1 ? u : u + " " + n)) n++; t.name = n === 1 ? u : u + " " + n; }
   tabs.push(t); return t;
 }
 function renderTabs() {
-  $("tabs").replaceChildren(...tabs.map((t) => {
+  $("tabs").replaceChildren(...tabs.filter((t) => !(folder && t.path?.startsWith(folder + "/"))).map((t) => {
     const d = document.createElement("div");
     d.className = "tab" + (t === cur ? " on" : "") + (t.dirty ? " dirty" : "") + (t === main ? " main" : "");
     d.title = t.path || t.name;
@@ -129,6 +131,7 @@ function renderTabs() {
     return d;
   }));
   $("tabs").querySelector(".on")?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  markFiles();
 }
 const setTitle = () => win.setTitle(cur ? `${cur.name}${cur.dirty ? " — " + tr("msg.edited") : ""} — MyLatex` : "MyLatex").catch(() => {});
 
@@ -163,17 +166,59 @@ async function openPaths(paths) {
   renderTabs(); saveSession();
 }
 
+// ---------- écriture sûre: ne jamais écraser sans prévenir un fichier modifié ailleurs
+const askConflict = (t) => invoke("ask_save", { title: tr("dlg.diskTitle", { name: t.name }), desc: tr("dlg.diskDesc"), save: tr("dlg.overwrite"), dont: tr("dlg.reload"), cancel: tr("dlg.cancel") });
+function reload(t, disk) {
+  const change = diff(tabText(t), norm(disk));
+  if (t === cur) ed.replace(change.from, change.to, change.insert); // onChange relance la compilation auto
+  else { t.state = t.state.update({ changes: change }).state; if (own(t) === own(cur)) { if (autoOn) compile(cur); } else own(t).pdf = null; }
+  t.disk = disk; t.dirty = false; renderTabs(); setTitle(); saveSession(); status("ok", tr("msg.reloaded", { name: t.name }));
+}
+// true = écrit. quiet (enregistrement automatique): en cas de conflit, on n'écrit pas et on ne demande rien.
+async function writeTab(t, quiet = false) {
+  const mine = tabText(t), disk = await invoke("read_file", { path: t.path });
+  if (diskState(disk, t.disk, mine) === "changed") {
+    if (quiet) { status("err", tr("msg.changedOnDisk", { name: t.name })); return false; }
+    t.asking = true; // le retour du focus après la boîte de dialogue ne doit pas reposer la question
+    const r = await askConflict(t);
+    if (r === 1) reload(t, disk);
+    if (r !== 0) { t.asking = false; return false; }
+  }
+  try { await invoke("write_file", { path: t.path, text: mine }); } catch (e) { t.asking = false; status("err", tr(quiet ? "msg.autoSaveFailed" : "msg.saveFailed", { e })); return false; }
+  t.asking = false; t.disk = mine; t.dirty = tabText(t) !== mine; renderTabs(); setTitle(); saveSession();
+  return true;
+}
+// au retour dans l'app: recharge les onglets intacts, demande pour ceux qui ont des modifications
+let checking = false;
+async function checkDisk() {
+  if (checking) return;
+  checking = true;
+  try {
+    for (const t of tabs.slice()) {
+      if (!t.path || t.asking) continue;
+      const disk = await invoke("read_file", { path: t.path }), state = diskState(disk, t.disk, tabText(t));
+      if (state === "synced") { t.disk = disk; t.dirty = false; renderTabs(); setTitle(); }
+      else if (state === "changed" && !t.dirty) reload(t, disk);
+      else if (state === "changed" && t.skip !== disk) {
+        const r = await askConflict(t);
+        if (r === 0) { t.disk = disk; await writeTab(t); } else if (r === 1) reload(t, disk); else t.skip = disk; // ne pas redemander pour cette version
+      }
+    }
+  } finally { checking = false; }
+}
+addEventListener("focus", checkDisk);
+
 async function save(t) {
   if (!t.path) return saveAs(t);
-  try { await invoke("write_file", { path: t.path, text: tabText(t) }); } catch (e) { status("err", tr("msg.saveFailed", { e })); return false; }
-  t.dirty = false; renderTabs(); setTitle(); saveSession(); status("ok", tr("msg.saved", { name: t.name })); return true;
+  if (!(await writeTab(t))) return false;
+  status("ok", tr("msg.saved", { name: t.name })); return true;
 }
 async function saveAs(t) {
-  const p = await invoke("save_dialog", { name: stem(t) + ".tex", dir: dir(t.path) });
+  const p = await invoke("save_dialog", { name: t.path ? t.name : stem(t) + ".tex", dir: dir(t.path) });
   if (!p) return false;
-  const path = /\.tex$/i.test(p) ? p : p + ".tex";
+  const path = /\.[^./]+$/.test(p) ? p : p + ".tex";
   try { await invoke("write_file", { path, text: tabText(t) }); } catch (e) { status("err", tr("msg.saveFailed", { e })); return false; }
-  t.path = path; t.name = base(path); t.dirty = false; t.pristine = false; renderTabs(); setTitle(); saveSession(); status("ok", tr("msg.saved", { name: t.name }));
+  t.path = path; t.disk = tabText(t); t.name = base(path); t.dirty = false; t.pristine = false; renderTabs(); setTitle(); saveSession(); status("ok", tr("msg.saved", { name: t.name }));
   return true;
 }
 // true = on peut fermer (enregistré, abandonné, ou rien à enregistrer)
@@ -204,8 +249,7 @@ const step = (d) => tabs.length > 1 && show(tabs[(tabs.indexOf(cur) + d + tabs.l
 let saveOn = localStorage.autosave === "1", svT;
 const saveUI = () => { $("asv").classList.toggle("on", saveOn); $("asv").setAttribute("aria-checked", saveOn); };
 async function quietSave(t) { // enregistre sans message; seulement les fichiers qui ont déjà un chemin
-  if (!t.dirty || !t.path) return;
-  try { await invoke("write_file", { path: t.path, text: tabText(t) }); t.dirty = false; renderTabs(); setTitle(); saveSession(); } catch (e) { status("err", tr("msg.autoSaveFailed", { e })); }
+  if (t.dirty && t.path) await writeTab(t, true);
 }
 const autosaveAll = () => saveOn && Promise.all(tabs.map(quietSave));
 const setAutoSave = (on) => { saveOn = on; localStorage.autosave = on ? "1" : "0"; saveUI(); invoke("set_check", { id: "autosave", on }); if (on) autosaveAll(); };
@@ -217,7 +261,7 @@ function saveSession() {
   if (cur) cur.state = ed.state();
   localStorage.session = JSON.stringify({
     cur: tabs.indexOf(cur),
-    tabs: tabs.filter((t) => t.path || t.dirty).map((t) => ({ path: t.path, name: t.name, dirty: t.dirty, text: t.dirty || !t.path ? tabText(t) : null })),
+    tabs: tabs.filter((t) => t.path || t.dirty).map((t) => ({ path: t.path, name: t.name, dirty: t.dirty, text: t.dirty || !t.path ? tabText(t) : null, disk: t.dirty && t.path ? t.disk : null })),
   });
 }
 async function restore() {
@@ -226,7 +270,7 @@ async function restore() {
     for (const x of s?.tabs || []) {
       const disk = x.path ? await invoke("read_file", { path: x.path }) : null;
       if (x.path && disk == null && x.text == null) continue;
-      const t = mk(x.path, x.text ?? disk, !!x.dirty); if (!x.path) t.name = x.name;
+      const t = mk(x.path, x.text ?? disk, !!x.dirty); t.disk = x.disk ?? disk; if (!x.path) t.name = x.name;
     }
     if (tabs.length) show(tabs[Math.max(0, Math.min(s.cur, tabs.length - 1))]);
   } catch {}
@@ -271,6 +315,12 @@ async function render(buf, t) {
       const v = pg.getViewport({ scale: sc }), c = document.createElement("canvas");
       c.width = v.width; c.height = v.height; c.style.width = d.style.width;
       await pg.render({ canvasContext: c.getContext("2d"), viewport: v }).promise;
+      // ponytail: la couche reste après libération du canvas (la sélection survit au défilement), jetée au prochain rendu
+      if (!d.querySelector(".textLayer")) {
+        const tl = Object.assign(document.createElement("div"), { className: "textLayer" }); tl.style.setProperty("--scale-factor", d.s);
+        await new pdfjs.TextLayer({ textContentSource: await pg.getTextContent(), container: tl, viewport: pg.getViewport({ scale: d.s }) }).render();
+        if (!d.querySelector(".textLayer")) d.append(tl);
+      }
       pg.cleanup();
       if (my === gen && d.vis) { d.querySelectorAll("canvas").forEach((x) => { x.width = x.height = 0; x.remove(); }); d.prepend(c); d.sharp = true; liveDivs.push(d); trimLive(); }
       else { c.width = c.height = 0; }
@@ -553,6 +603,48 @@ ob.onpointermove = (e) => { if (ob.classList.contains("on")) setOW(Math.round(Ma
 ob.onpointerup = () => { ob.classList.remove("on"); localStorage.outW = parseInt(getComputedStyle($("outline")).width); };
 ob.ondblclick = () => { setOW(210); localStorage.outW = 210; };
 
+// ---------- dossier ouvert: bouton en haut, bande horizontale de ses fichiers juste en dessous
+let folder = localStorage.folder || null, filesOn = localStorage.files !== "0", sub = ""; // sub = sous-dossier affiché ("/a/b")
+const TEXT = /\.(tex|bib|sty|cls|bst|txt|md)$/i;
+function markFiles() {
+  for (const d of $("flist").children) {
+    const t = tabs.find((x) => x.path === d.dataset.path);
+    d.classList.toggle("on", !!t && t === cur); d.classList.toggle("dirty", !!t?.dirty); d.classList.toggle("main", !!t && t === main);
+  }
+}
+async function showFolder() {
+  $("folder").hidden = !folder; $("files").hidden = !folder || !filesOn; $("folder").classList.toggle("on", filesOn);
+  if (!folder) return;
+  $("folder").querySelector("span").textContent = base(folder);
+  if (!filesOn) return;
+  const here = folder + sub, item = (label, path, onclick) => { const d = Object.assign(document.createElement("div"), { textContent: label, title: path, onclick }); d.dataset.path = path; return d; };
+  const items = (await invoke("list_dir", { path: here })).map(([name, isDir]) => {
+    const p = here + "/" + name;
+    return item(isDir ? name + " ›" : name, p, () => {
+      if (isDir) { sub += "/" + name; showFolder(); }
+      else if (TEXT.test(name)) openPaths([p]);
+      else invoke("reveal", { path: p }); // image, PDF…: montré dans le Finder
+    });
+  });
+  if (sub) items.unshift(item("‹ " + base(here), dir(here), () => { sub = dir(sub); showFolder(); }));
+  $("flist").replaceChildren(...items); markFiles();
+}
+const setFiles = (on) => { filesOn = on; localStorage.files = on ? "1" : "0"; showFolder(); };
+const setFolder = (p) => { folder = p; sub = ""; p ? (localStorage.folder = p) : localStorage.removeItem("folder"); setFiles(true); renderTabs(); };
+// À l'ouverture d'un dossier: s'il contient un seul .tex avec \documentclass, il devient le document principal
+async function pickMain(root) {
+  const found = [];
+  for (const [name, isDir] of await invoke("list_dir", { path: root }))
+    if (!isDir && /\.tex$/i.test(name) && /^[^%\n]*\\documentclass/m.test((await invoke("read_file", { path: root + "/" + name })) || "")) found.push(root + "/" + name);
+  if (found.length !== 1) return; // aucun ou plusieurs: au choix de l'utilisateur (⇧⌘M)
+  await openPaths(found);
+  main = tabs.find((t) => t.path === found[0]) || null; if (!main) return;
+  localStorage.mainPath = main.path; renderTabs(); status("ok", tr("msg.mainSet", { name: main.name }));
+}
+$("folder").onclick = () => setFiles(!filesOn);
+$("fclose").onclick = () => setFolder(null);
+addEventListener("focus", () => folder && showFolder()); // fichiers ajoutés/supprimés ailleurs
+
 // ---------- guide intégré (menu Help): guide.<langue>.html, repli sur l'anglais
 const fetchGuide = async () => { for (const l of [curLang(), "en"]) { const r = await fetch(`guide.${l}.html`); if (r.ok) return r.text(); } return ""; };
 async function openGuide(anchor) {
@@ -637,20 +729,27 @@ async function insertImages(paths) {
 // ---------- compilation
 async function compile(t = cur, online = false) {
   clearTimeout(timer);
+  const root = own(t).path;
+  if (root && !/\.tex$/i.test(root)) return;
   if (busy) { again = t; return; }
   const o = own(t);
   busy = true; o.compiling = true; files = 0; mb = 0; line = ""; warns = []; $("prog").classList.add("on"); status("busy", tr("msg.compiling"));
+  const slow = setTimeout(() => ($("stop").hidden = false), 1500); // pas de clignotement sur les compilations rapides
   try {
     // un fichier inclus modifié doit être sur le disque pour que \input le voie
-    if (t !== o && t.dirty && t.path) { await invoke("write_file", { path: t.path, text: tabText(t) }); t.dirty = false; renderTabs(); }
+    if (t !== o && t.dirty && t.path) await writeTab(t, true);
     const buf = await invoke("compile", { id: o.id, path: o.path, text: tabText(o), online });
     o.pdf = buf; o.ok = true; o.log = ""; o.sync = null; o.warns = warns.slice(); o.diag = o.warns;
     if (files > 5) { exp.f = files; exp.mb = Math.max(mb, 1); localStorage.exp = JSON.stringify(exp); }
     if (own(cur) === o) await render(buf, o);
   } catch (e) {
-    o.ok = false; o.log = String(e); o.warns = warns.slice();
-    o.diag = [...parseErrors(o.log).filter((x) => x.line).map((x) => ({ kind: "error", ...x })), ...o.warns];
+    if (String(e) === "STOPPED") { o.ok = null; o.log = ""; o.warns = []; o.diag = []; again = null; } // arrêt demandé: rien à signaler
+    else {
+      o.ok = false; o.log = String(e); o.warns = warns.slice();
+      o.diag = [...parseErrors(o.log).filter((x) => x.line).map((x) => ({ kind: "error", ...x })), ...o.warns];
+    }
   }
+  clearTimeout(slow); $("stop").hidden = true;
   busy = false; o.compiling = false; $("prog").classList.remove("on", "det"); showDl();
   if (own(cur) === o) { statusFor(o); showLog(o); applyMarks(); refreshData(true); }
   if (again) { const a = again; again = null; compile(a); }
@@ -663,8 +762,8 @@ async function exportPdf(t, dest = null) {
   if (r) status("ok", tr("msg.pdfSaved", { name: base(r) }));
 }
 
-// ---------- bouton Compile ("Autocompile on" quand l'auto-compilation est active) et mode Visual
-const acUI = () => { $("acs").classList.toggle("on", autoOn); $("acs").setAttribute("aria-checked", autoOn); };
+// ---------- bouton Compile (masqué quand l'auto-compilation est active) et mode Visual
+const acUI = () => { $("acs").classList.toggle("on", autoOn); $("acs").setAttribute("aria-checked", autoOn); $("run").style.display = autoOn ? "none" : ""; };
 const setAutoCompile = (on) => { autoOn = on; localStorage.auto = on ? "1" : "0"; acUI(); invoke("set_check", { id: "auto", on }); if (on) compile(cur); };
 $("acs").onclick = () => setAutoCompile(!autoOn);
 let visualOn = localStorage.visual === "1";
@@ -680,6 +779,7 @@ $("mcode").onclick = () => setVisual(false); $("mvis").onclick = () => setVisual
 const acts = {
   new: () => newTab(),
   open: async () => { const p = await invoke("open_dialog"); if (p.length) openPaths(p); },
+  open_folder: async () => { const p = await invoke("folder_dialog"); if (p) { setFolder(p); await pickMain(p); } },
   close: () => closeTab(cur),
   save: () => save(cur),
   save_as: () => saveAs(cur),
@@ -693,6 +793,7 @@ const acts = {
   undo: () => ed.undo(), redo: () => ed.redo(), find: () => ed.find(), find_next: () => ed.next(), find_prev: () => ed.prev(),
   goto: () => ed.gotoLine(), comment: () => ed.comment(),
   compile: () => compile(cur),
+  stop: () => busy && invoke("stop_compile"),
   sync: syncToPdf,
   main: () => { main = main === cur ? null : cur; localStorage.mainPath = main?.path || ""; renderTabs(); status("ok", main ? tr("msg.mainSet", { name: main.name }) : tr("msg.mainCleared")); compile(cur); },
   auto: () => setAutoCompile(!autoOn),
@@ -714,6 +815,7 @@ const acts = {
 listen("menu", (e) => acts[e.payload]?.());
 listen("open-paths", (e) => openPaths(e.payload));
 $("run").onclick = () => compile(cur);
+$("stop").onclick = () => invoke("stop_compile");
 $("add").onclick = () => newTab();
 win.onCloseRequested((e) => { e.preventDefault(); quit(); });
 window.__TAURI__.webview.getCurrentWebview().onDragDropEvent((e) => {
@@ -749,6 +851,7 @@ bar.ondblclick = () => setSplit(50);
 new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(rerender, 150); }).observe($("pv"));
 
 // ---------- préférences, langue, modèles
+let updOn = localStorage.updates !== "0";
 let tabSz = +localStorage.tab || 4, wrapOn = localStorage.wrap !== "0", ligOn = localStorage.lig !== "0", closeOn = localStorage.close !== "0", spellMode = localStorage.spellLang || "auto";
 const applyEditorPrefs = () => { ed.setPrefs({ tab: tabSz, wrap: wrapOn }); ed.setAutoClose(closeOn); document.documentElement.style.setProperty("--lig", ligOn ? "normal" : "none"); };
 const setKeep = (on) => { keepOn = on; localStorage.keep = on ? "1" : "0"; invoke("set_keep", { keep: on }); invoke("set_check", { id: "keep", on }); };
@@ -759,7 +862,7 @@ ed.onSpellLang((l) => ($("slang").textContent = spellOn ? l : ""));
 async function setLanguage(c) {
   localStorage.lang = c; await loadLang(c); document.documentElement.lang = curLang(); applyI18n();
   invoke("set_menu_labels", { labels: menuLabels() }); invoke("set_lang_check", { code: curLang() });
-  setTitle(); pos(ed.state()); words(); buildOutline(); if (cur) { statusFor(own(cur)); showLog(own(cur)); renderTabs(); }
+  setTitle(); showUpdate(); pos(ed.state()); words(); buildOutline(); if (cur) { statusFor(own(cur)); showLog(own(cur)); renderTabs(); }
   if ($("guide").classList.contains("on")) { $("gbody").replaceChildren(); openGuide(); }
   if ($("prefs").classList.contains("on")) openPrefs();
 }
@@ -778,6 +881,7 @@ function openPrefs() {
   sect("prefs.general");
   row(tr("prefs.language"), sel(LANGS, curLang(), (v) => setLanguage(v)), tr("prefs.languageTip"));
   row(tr("prefs.theme"), sel(THEME_IDS.map((i) => [i, tr("menu.theme_" + i)]), themeName, (v) => setTheme(v)));
+  row(tr("prefs.updates"), sw(() => updOn, setUpdCheck), tr("prefs.updatesTip"));
   sect("prefs.editor");
   row(tr("prefs.fontSize"), num(fs, 8, 32, (v) => setFs(v)));
   row(tr("prefs.tabSize"), sel([[2, "2"], [4, "4"], [8, "8"]], tabSz, (v) => { tabSz = +v; localStorage.tab = v; applyEditorPrefs(); }));
@@ -810,6 +914,21 @@ function openPrefs() {
 const closePrefs = () => { $("prefs").classList.remove("on"); $("pbody").replaceChildren(); };
 $("px").onclick = closePrefs; $("prefs").addEventListener("mousedown", (e) => { if (e.target === $("prefs")) closePrefs(); });
 
+// ---------- mise à jour: bandeau quand une version plus récente est publiée sur GitHub
+let latest = null;
+const showUpdate = () => { if (latest) $("updt").textContent = tr("update.available", { v: latest }); };
+async function checkUpdate() {
+  if (!updOn) return;
+  const v = await newVersion(await invoke("app_version"));
+  if (updOn && v && v !== latest) { latest = v; showUpdate(); $("upd").hidden = false; }
+}
+function setUpdCheck(on) {
+  updOn = on; localStorage.updates = on ? "1" : "0";
+  if (on) checkUpdate(); else { latest = null; $("upd").hidden = true; }
+}
+$("updb").onclick = () => invoke("open_releases");
+$("updx").onclick = () => ($("upd").hidden = true); // revient au prochain lancement
+
 // ---------- démarrage
 await loadLang(localStorage.lang || detectLang()); document.documentElement.lang = curLang(); applyI18n();
 invoke("set_menu_labels", { labels: menuLabels() }); invoke("set_lang_check", { code: curLang() });
@@ -821,9 +940,12 @@ if (!spellOn) invoke("set_check", { id: "spell", on: false });
 if (!keepOn) invoke("set_check", { id: "keep", on: false });
 await restore();
 if (spellOn) ed.setSpell(true, showSpellMenu); // dictionnaire (~200 Ko) chargé seulement si la vérification est active
-$("outline").classList.toggle("off", !outOn); $("tsb").classList.toggle("on", outOn); buildOutline(); refreshData(true);
+$("outline").classList.toggle("off", !outOn); $("tsb").classList.toggle("on", outOn); buildOutline(); refreshData(true); showFolder();
 if (!localStorage.guideSeen) { localStorage.guideSeen = "1"; openGuide(); } // première ouverture: présenter le guide
 setVisual(visualOn);
 main = tabs.find((t) => t.path && t.path === localStorage.mainPath) || null; renderTabs();
+if (cur && own(cur) !== cur && !own(cur).pdf) compile(cur);
 const pend = await invoke("take_pending"); if (pend.length) openPaths(pend);
+checkDisk(); // brouillons restaurés dont le fichier a changé entre-temps
 { const dbg = localStorage._open; if (dbg) { localStorage.removeItem("_open"); acts[dbg]?.(); } } // crochet de test: ouvre une action au démarrage
+checkUpdate(); setInterval(checkUpdate, 24 * 3600 * 1000);

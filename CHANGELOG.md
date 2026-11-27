@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.0
+
+### New
+- **Open a folder** (File → Open Folder…, ⇧⌘O): the folder's files appear as tabs under the top bar, you can browse into subfolders, and the main document is picked automatically when only one `.tex` file has a `\documentclass`. Images and PDFs are revealed in Finder.
+- **Select and copy text in the PDF preview.**
+- **Stop a compilation** with the Stop button or ⌘. — it appears when a compile takes more than 1.5 s.
+- **Update notification:** MyLatex tells you when a newer version is published on GitHub, with a Download button. It checks at launch and once a day, and can be turned off in Preferences.
+
+### Safer
+- **Files changed outside the app** (another editor, `git pull`…) are reloaded when you come back to MyLatex. If you also have unsaved changes, you choose between Overwrite and Reload; saving and auto-save never silently overwrite them.
+- **Compilations that loop forever are stopped** after 3 minutes (15 minutes when packages are being downloaded).
+
+### Changed
+- The Compile button is hidden while Autocompile is on.
+- Save As keeps the extension of non-`.tex` files (`.bib`, `.sty`…), and those files no longer start a compilation on their own.
+- Automated tests now run on every build.
+
 ## 0.3.0
 - Renamed from Plume to MyLatex, with a new icon (settings from Plume are not carried over automatically)
 - Help → LaTeX Essentials: five downloadable cheat sheets

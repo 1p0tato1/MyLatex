@@ -4,6 +4,6 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 TAG="${1:?usage: publish-release.sh vX.Y.Z}"
-[ -f dist/MyLatex.dmg ] || VERSION="${TAG#v}" app/tools/release.sh
+VERSION="${TAG#v}" app/tools/release.sh
 (cd dist && ditto -c -k --keepParent MyLatex.app MyLatex-app.zip)
 gh release create "$TAG" dist/MyLatex.dmg dist/MyLatex-app.zip --title "MyLatex $TAG" --notes-file <(sed -n "/^## ${TAG#v}/,/^## /p" CHANGELOG.md | sed '$d')

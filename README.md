@@ -29,6 +29,9 @@ MyLatex is a small desktop app (Tauri + Rust, ~55 MB, ~150–300 MB RAM) that co
 | 🔤 **Spell check** | English and French (auto-detected or manual), red wavy underline, suggestions, personal dictionary — tiny memory footprint |
 | 🧯 **Readable errors** | Error cards with line jump, red underlines in the code, warning counter |
 | 📑 **Projects** | Tabs, outline sidebar, multi-file projects, drag & drop images → `\includegraphics`, auto-save, session restore |
+| 🗂 **Folders** | Open a whole folder (⇧⌘O): its files as tabs, main document picked automatically; files changed elsewhere are reloaded and never silently overwritten |
+| 📋 **PDF preview** | Select and copy text; stop a long compile with ⌘. |
+| 🔔 **Updates** | Notifies you of new releases (can be turned off) |
 | 📄 **Templates** | article, ICML, NeurIPS, IEEE, beamer, CV, letter (all compile offline) |
 | 🎨 **Themes** | JetBrains-style: Light, Darcula, High contrast, Islands, Fleet, IntelliJ… |
 | 🍎 **Native** | macOS menu bar, ⌘-shortcuts, `.tex` file association, PDF export |

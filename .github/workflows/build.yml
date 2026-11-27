@@ -16,6 +16,9 @@ jobs:
       - run: npm ci && npm run build
         working-directory: app
       - run: app/tools/fetch-tectonic.sh && app/tools/make-seed.sh
+      - name: Tests
+        run: npm test && (cd src-tauri && cargo test)
+        working-directory: app
       - run: app/tools/release.sh
         env: { VERSION: "${{ github.ref_type == 'tag' && github.ref_name || '0.0.0-ci' }}" }
       - uses: actions/upload-artifact@v4
